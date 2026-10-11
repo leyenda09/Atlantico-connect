@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universidad del Atlántico - AtlánticoConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased min-h-screen pb-12">
+
+  <!-- ================= VISTA 1: APLICACIÓN DEL ALUMNO (ATLÁNTICOCONNECT) ================= -->
+  <div id="studentAppView">
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR (HEADER) -->
+    <header class="bg-white shadow-md sticky top-0 z-40 px-4 py-2 flex items-center justify-between border-b border-purple-100">
+      
+      <!-- USUARIO Y PERFIL -->
+      <div onclick="openProfileModal()" class="flex items-center space-x-3 cursor-pointer p-1.5 rounded-xl hover:bg-purple-50 transition duration-200">
+        <div class="relative">
+          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Foto de Perfil" class="w-10 h-10 rounded-full object-cover border-2 border-purple-600 shadow-sm" />
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+        </div>
+        <div class="hidden sm:block text-left">
+          <div class="flex items-center space-x-1">
+            <span id="headerName" class="font-bold text-sm text-gray-800 leading-tight">Ezequiel de Luna</span>
+            <i class="fas fa-check-circle text-amber-400 text-xs" title="Alumno Activo"></i>
+          </div>
+          <p id="headerCareer" class="text-xs text-purple-700 font-semibold leading-tight">Ing. en Sistemas Computacionales</p>
+          <p id="headerMatricula" class="text-[10px] text-gray-500 leading-tight">Matrícula: <span id="headerMatriculaVal" class="font-mono">UA-2026-8941</span></p>
+        </div>
+      </div>
+
+      <!-- BRANDING CENTRO -->
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 bg-purple-800 border border-amber-300 rounded-lg flex items-center justify-center text-amber-300 font-bold text-lg shadow">U</div>
+        <span class="font-black text-xl text-purple-900 tracking-tight hidden md:inline">Atlántico<span class="text-amber-500">Connect</span></span>
+      </div>
+
+      <!-- SELECTOR DE USUARIOS & BOTÓN MENÚ 3 BARRAS -->
+      <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-1 bg-purple-50 border border-purple-200 rounded-xl px-2 py-1">
+          <i class="fas fa-user-friends text-purple-600 text-xs"></i>
+          <select id="userSelector" onchange="switchUser(this.value)" class="text-xs bg-transparent font-semibold text-purple-900 focus:outline-none cursor-pointer">
+            <option value="0">Ezequiel (Sistemas)</option>
+            <option value="1">María (Industrial)</option>
+            <option value="2">Carlos (Administración)</option>
+          </select>
+        </div>
+
+        <button onclick="toggleMenu()" class="w-10 h-10 rounded-full bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-900 focus:outline-none transition shadow-sm border border-purple-200" title="Menú Principal">
+          <i class="fas fa-bars text-lg"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- MENÚ DESPLEGABLE LATERAL (3 BARRAS) -->
+    <div id="sideMenuOverlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <aside id="sideMenu" class="fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between">
+      <div>
+        <div class="p-4 bg-purple-900 text-white flex items-center justify-between shadow border-b-2 border-amber-400">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-compass text-amber-300 text-xl"></i>
+            <h2 class="font-bold text-lg">Menú Universitario</h2>
+          </div>
+          <button onclick="toggleMenu()" class="text-purple-200 hover:text-white p-1">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <nav class="p-4 space-y-3">
+          <a href="https://alumnos.atlantico53.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 text-gray-700 hover:text-purple-800 transition border border-gray-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+              <i class="fas fa-university text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Portal Oficial</p>
+              <p class="text-xs text-gray-500">Acceso a alumnos.atlantico53.com</p>
+            </div>
+            <i class="fas fa-external-link-alt text-xs text-gray-400 group-hover:text-purple-600"></i>
+          </a>
+
+          <button onclick="openChatModal()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 text-gray-700 hover:text-purple-800 transition border border-gray-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+              <i class="fas fa-comments text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Grupos de Chat</p>
+              <p class="text-xs text-gray-500">Unirse a salas de compañeros</p>
+            </div>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Nuevo</span>
+          </button>
+
+          <button onclick="openCafeteriaModal()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-orange-50 text-gray-700 hover:text-orange-700 transition border border-gray-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition">
+              <i class="fas fa-hamburger text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Cafetería Express</p>
+              <p class="text-xs text-gray-500">Pide con anticipación y evita filas</p>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-400 group-hover:text-orange-600"></i>
+          </button>
+
+          <button onclick="requestTerminalAccess()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 text-red-700 transition border border-red-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fas fa-cash-register text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Terminal Cafetería (KDS)</p>
+              <p class="text-xs text-red-500">Acceso exclusivo personal (PIN)</p>
+            </div>
+            <i class="fas fa-lock text-xs text-red-400"></i>
+          </button>
+        </nav>
+      </div>
+
+      <div class="p-4 border-t border-gray-200 bg-gray-50 text-center">
+        <p class="text-xs text-gray-500 font-medium">Universidad del Atlántico v1.0</p>
+      </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL (FEED DE PUBLICACIONES) -->
+    <main class="max-w-2xl mx-auto px-4 pt-6">
+      
+      <!-- CREAR PUBLICACIÓN -->
+      <div class="bg-white rounded-2xl shadow-sm border border-purple-100 p-4 mb-6">
+        <div class="flex space-x-3">
+          <img id="feedUserAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-11 h-11 rounded-full object-cover border-2 border-purple-200 shadow-sm" alt="Foto usuario" />
+          <div class="flex-1">
+            <textarea id="postContent" rows="3" placeholder="¿Qué estás pensando hoy? Comparte texto, fotos o videos..." class="w-full p-3 bg-purple-50/50 rounded-xl border border-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white text-sm resize-none transition"></textarea>
+            
+            <div id="mediaPreviewContainer" class="hidden relative mt-2 rounded-xl overflow-hidden border border-gray-200 bg-black/5 max-h-64 flex items-center justify-center">
+              <button onclick="removeSelectedMedia()" class="absolute top-2 right-2 bg-black/70 hover:bg-black text-white rounded-full w-7 h-7 flex items-center justify-center text-xs z-10 transition">
+                <i class="fas fa-times"></i>
+              </button>
+              <div id="mediaPreviewContent"></div>
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-100">
+              <div class="flex items-center space-x-3">
+                <label class="flex items-center space-x-1.5 text-xs font-semibold text-purple-700 hover:text-purple-800 bg-purple-100 hover:bg-purple-200 px-3 py-1.5 rounded-lg cursor-pointer transition">
+                  <i class="fas fa-photo-video text-sm text-purple-600"></i>
+                  <span>Foto / Video</span>
+                  <input type="file" id="postMediaInput" accept="image/*,video/*" onchange="handleMediaSelect(event)" class="hidden" />
+                </label>
+
+                <div class="flex items-center space-x-1">
+                  <label class="text-xs font-semibold text-gray-500 hidden sm:inline"><i class="fas fa-globe text-gray-400"></i> Ver:</label>
+                  <select id="postAudience" class="text-xs bg-gray-100 border border-gray-300 rounded-lg px-2 py-1 font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                    <option value="Todos (Público Campus)">🌐 Todo el Campus</option>
+                    <option value="Grupo de Ing. de Software">💻 Ing. de Software</option>
+                    <option value="Grupo de Bases de Datos">🗄️ Bases de Datos</option>
+                    <option value="Proyectos Integradores">🚀 Proyectos Integradores</option>
+                  </select>
+                </div>
+              </div>
+
+              <button onclick="createPost()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm px-5 py-1.5 rounded-xl transition shadow-md flex items-center space-x-1 border border-amber-300">
+                <i class="fas fa-paper-plane text-xs text-amber-300"></i>
+                <span>Publicar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOVEDADES FEED -->
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-purple-900 text-base flex items-center space-x-2">
+          <i class="fas fa-newspaper text-purple-600"></i>
+          <span>Novedades del Campus</span>
+        </h3>
+        <span class="text-xs text-purple-800 bg-purple-50 px-2 py-1 rounded-md border border-purple-200 shadow-sm flex items-center space-x-1">
+          <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+          <span>Actualizado en vivo</span>
+        </span>
+      </div>
+
+      <div id="postsFeed" class="space-y-4">
+        <div id="post-1" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-3">
+              <img class="userAvatarImg w-10 h-10 rounded-full object-cover border border-purple-200" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Ezequiel" />
+              <div>
+                <p class="font-bold text-sm text-gray-900 leading-tight">Ezequiel de Luna</p>
+                <div class="flex items-center space-x-2 text-[11px] text-gray-500">
+                  <span>Hace 20 min</span>
+                  <span>•</span>
+                  <span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">🌐 Todo el Campus</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-800 mb-3 leading-relaxed">
+            ¡Avanzando con el proyecto para la universidad! Presentamos la maqueta de la red social estudiantil con módulo de Cafetería Express e integración al portal. 🚀💻
+          </p>
+          <div class="rounded-xl overflow-hidden mb-3 border border-gray-100">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Imagen del proyecto" class="w-full max-h-80 object-cover" />
+          </div>
+
+          <!-- LIKES Y COMENTARIOS -->
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <button onclick="toggleLike('post-1')" class="flex items-center space-x-1.5 hover:text-red-500 transition font-semibold">
+              <i id="likeIcon-post-1" class="far fa-heart text-base"></i>
+              <span id="likeCount-post-1">12</span> Me gusta
+            </button>
+            <button onclick="toggleCommentBox('post-1')" class="flex items-center space-x-1.5 hover:text-purple-700 transition font-semibold">
+              <i class="far fa-comment text-base"></i>
+              <span>3 Comentarios</span>
+            </button>
+          </div>
+
+          <div id="commentBox-post-1" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2">
+            <div id="commentList-post-1" class="space-y-2 text-xs">
+              <div class="bg-gray-50 p-2 rounded-xl"><strong>María González:</strong> ¡Excelente avance! Felicidades 🎉</div>
+              <div class="bg-gray-50 p-2 rounded-xl"><strong>Carlos Ramírez:</strong> ¿A qué hora abren la cafetería? 🍔</div>
+            </div>
+            <div class="flex space-x-2 pt-1">
+              <input type="text" id="commentInput-post-1" placeholder="Escribe un comentario..." class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500" />
+              <button onclick="addComment('post-1')" class="bg-purple-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+
+  <!-- ================= VISTA 2: TERMINAL DE CAFETERÍA (KDS) ================= -->
+  <div id="cafeteriaTerminalView" class="hidden min-h-screen bg-slate-900 text-white p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-800 p-4 rounded-2xl mb-6 border border-slate-700 shadow-xl gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center text-2xl shadow">🐷</div>
+          <div>
+            <h1 class="text-xl font-black tracking-wide text-orange-400">La Chancha Urbana - Terminal KDS</h1>
+            <p class="text-xs text-slate-400">Sistema de Control y Recepción de Pedidos Express</p>
+          </div>
+        </div>
+        <button onclick="switchToStudentApp()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center space-x-2 border border-amber-400/40">
+          <i class="fas fa-mobile-alt text-amber-300"></i>
+          <span>Volver a AtlánticoConnect (Alumno)</span>
+        </button>
+      </div>
+
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-300 flex items-center space-x-2">
+          <i class="fas fa-clipboard-list text-orange-500"></i>
+          <span>Órdenes Entrantes en Tiempo Real</span>
+        </h2>
+        <span id="terminalOrderCount" class="text-xs bg-slate-800 text-orange-400 border border-slate-700 px-3 py-1 rounded-full font-mono font-bold">0 Órdenes activas</span>
+      </div>
+
+      <div id="terminalOrdersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="terminalEmptyState" class="col-span-full bg-slate-800/50 border border-slate-700/60 rounded-3xl p-12 text-center text-slate-400">
+          <i class="fas fa-utensils text-4xl mb-3 text-slate-600"></i>
+          <p class="text-sm font-semibold">No hay pedidos pendientes en este momento.</p>
+          <p class="text-xs text-slate-500 mt-1">Los pedidos que los alumnos confirmen aparecerán aquí automáticamente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL: PIN DE ACCESO A TERMINAL -->
+  <div id="terminalPinModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full p-6 text-white shadow-2xl text-center space-y-4">
+      <div class="w-14 h-14 bg-red-600/20 text-red-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-red-500/30">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg">Acceso Restringido</h3>
+        <p class="text-xs text-slate-400 mt-1">Ingresa el PIN de empleado de la cafetería para abrir la terminal de cocina.</p>
+      </div>
+
+      <input type="password" id="terminalPinInput" placeholder="••••" maxlength="6" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-center text-xl tracking-widest text-white focus:outline-none focus:ring-2 focus:ring-red-500 font-mono" />
+      
+      <div class="flex space-x-2 pt-2">
+        <button onclick="closeTerminalPinModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">Cancelar</button>
+        <button onclick="verifyTerminalPin()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">Ingresar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL PERFIL CON CAMBIO DE FOTO -->
+  <div id="profileModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
+      <div class="relative bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-900 h-28 p-4 border-b-2 border-amber-400">
+        <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-white bg-black/30 hover:bg-black/50 rounded-full w-8 h-8 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="px-6 pb-6 relative">
+        <div class="flex justify-between items-end -mt-12 mb-4">
+          <div class="relative group">
+            <img id="modalProfileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md" alt="Avatar" />
+            <label class="absolute bottom-0 right-0 bg-purple-700 hover:bg-purple-800 text-white p-2 rounded-full shadow-lg cursor-pointer transition border-2 border-white" title="Cambiar foto de perfil">
+              <i class="fas fa-camera text-xs"></i>
+              <input type="file" id="profileImageInput" accept="image/*" onchange="changeProfilePicture(event)" class="hidden" />
+            </label>
+          </div>
+          <button onclick="document.getElementById('profileImageInput').click()" class="bg-purple-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-purple-800 transition flex items-center space-x-1 border border-amber-300">
+            <i class="fas fa-camera text-xs text-amber-300"></i>
+            <span>Cambiar Foto</span>
+          </button>
+        </div>
+        <h3 id="modalProfileName" class="text-xl font-black text-gray-900">Ezequiel de Luna</h3>
+        <p id="modalProfileCareer" class="text-sm font-semibold text-purple-700">Ingeniería en Sistemas Computacionales</p>
+        <p id="modalProfileMatricula" class="text-xs text-gray-500 mb-3">Matrícula: UA-2026-8941</p>
+        <p class="text-xs text-gray-600 bg-purple-50/50 p-3 rounded-xl border border-purple-100 italic mb-4">
+          "Estudiante activo en Universidad del Atlántico. 💻📚"
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CAFETERÍA EXPRESS CON FILTROS Y BUSCADOR -->
+  <div id="cafeteriaModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 p-4 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🐷</div>
+          <div>
+            <h3 class="font-bold text-lg leading-tight">La Chancha Urbana</h3>
+            <p class="text-xs text-orange-100">Cafetería Campus - Pedido Express</p>
+          </div>
+        </div>
+        <button onclick="closeCafeteriaModal()" class="text-white hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="cafeteriaBodyContainer" class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+        <div id="menuView">
+          
+          <!-- BUSCADOR Y FILTROS -->
+          <div class="mb-3 space-y-2">
+            <input type="text" id="searchMenuInput" onkeyup="filterMenu()" placeholder="🔍 Buscar platillo (ej. Chilaquiles, Torta)..." class="w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500" />
+            
+            <div class="flex space-x-1 overflow-x-auto custom-scrollbar pb-1 text-[11px] font-bold">
+              <button onclick="filterCategory('todos')" class="bg-orange-600 text-white px-2.5 py-1 rounded-lg">Todos</button>
+              <button onclick="filterCategory('antojitos')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Antojitos</button>
+              <button onclick="filterCategory('chilaquiles')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Chilaquiles</button>
+              <button onclick="filterCategory('tortas')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Tortas/Burgers</button>
+            </div>
+          </div>
+
+          <div id="menuItemsContainer" class="space-y-2.5">
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="sandwich jamon queso"><div class="flex items-center space-x-3"><span class="text-2xl">🥪</span><div><p class="font-bold text-sm text-gray-800">Sandwich Jamón y Queso</p><span class="text-xs font-bold text-orange-600">$35.00 MXN</span></div></div><button onclick="addToCart('Sandwich Jamón y Queso', 35)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="hamburguesa clasica"><div class="flex items-center space-x-3"><span class="text-2xl">🍔</span><div><p class="font-bold text-sm text-gray-800">Hamburguesa Clásica</p><span class="text-xs font-bold text-orange-600">$105.00 MXN</span></div></div><button onclick="addToCart('Hamburguesa Clásica', 105)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="hamburguesa papas"><div class="flex items-center space-x-3"><span class="text-2xl">🍟</span><div><p class="font-bold text-sm text-gray-800">Hamburguesa c/ Papas</p><span class="text-xs font-bold text-orange-600">$115.00 MXN</span></div></div><button onclick="addToCart('Hamburguesa c/ Papas', 115)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot dog clasico"><div class="flex items-center space-x-3"><span class="text-2xl">🌭</span><div><p class="font-bold text-sm text-gray-800">Hot Dog Clásico</p><span class="text-xs font-bold text-orange-600">$35.00 MXN</span></div></div><button onclick="addToCart('Hot Dog Clásico', 35)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot dog tocino"><div class="flex items-center space-x-3"><span class="text-2xl">🥓</span><div><p class="font-bold text-sm text-gray-800">Hot Dog c/ Tocino</p><span class="text-xs font-bold text-orange-600">$50.00 MXN</span></div></div><button onclick="addToCart('Hot Dog c/ Tocino', 50)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="torta deshebrada"><div class="flex items-center space-x-3"><span class="text-2xl">🥖</span><div><p class="font-bold text-sm text-gray-800">Torta Deshebrada</p><span class="text-xs font-bold text-orange-600">$70.00 MXN</span></div></div><button onclick="addToCart('Torta Deshebrada', 70)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="torta carne asada"><div class="flex items-center space-x-3"><span class="text-2xl">🥩</span><div><p class="font-bold text-sm text-gray-800">Torta de Carne Asada</p><span class="text-xs font-bold text-orange-600">$80.00 MXN</span></div></div><button onclick="addToCart('Torta de Carne Asada', 80)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="sincronizada"><div class="flex items-center space-x-3"><span class="text-2xl">🌮</span><div><p class="font-bold text-sm text-gray-800">Sincronizada</p><span class="text-xs font-bold text-orange-600">$100.00 MXN</span></div></div><button onclick="addToCart('Sincronizada', 100)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles nat"><div class="flex items-center space-x-3"><span class="text-2xl">🍽️</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles Nat</p><span class="text-xs font-bold text-orange-600">$80.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles Nat', 80)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles carne"><div class="flex items-center space-x-3"><span class="text-2xl">🥩</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles c/ Carne</p><span class="text-xs font-bold text-orange-600">$110.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles c/ Carne', 110)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles pollo"><div class="flex items-center space-x-3"><span class="text-2xl">🍗</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles c/ Pollo</p><span class="text-xs font-bold text-orange-600">$85.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles c/ Pollo', 85)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot cakes"><div class="flex items-center space-x-3"><span class="text-2xl">🥞</span><div><p class="font-bold text-sm text-gray-800">Hot Cakes</p><span class="text-xs font-bold text-orange-600">$15.00 MXN</span></div></div><button onclick="addToCart('Hot Cakes', 15)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+          </div>
+
+          <div class="mt-6 bg-orange-50 p-4 rounded-2xl border border-orange-200">
+            <h5 class="font-bold text-sm text-orange-900 mb-2 flex items-center justify-between">
+              <span class="flex items-center space-x-1.5"><i class="fas fa-shopping-cart"></i><span>Tu Pedido</span></span>
+              <span id="cartCount" class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full font-bold">0 ítems</span>
+            </h5>
+            <ul id="cartList" class="text-xs text-gray-700 space-y-1.5 mb-3">
+              <li class="text-gray-400 italic">No has agregado nada aún.</li>
+            </ul>
+            <div class="flex justify-between items-center font-bold text-sm text-gray-900 pt-2 border-t border-orange-200">
+              <span>Total:</span>
+              <span id="cartTotal" class="text-orange-600 text-base">$0.00 MXN</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="activeTicketView" class="hidden text-center space-y-4 py-2">
+          <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-3xl p-5 text-gray-800 shadow-sm relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              ¡Pedido en Preparación! 🐷
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-2">Folio de Orden:</p>
+            <h3 id="ticketFolio" class="text-2xl font-black text-orange-600 font-mono tracking-wider">#CH-0000</h3>
+            
+            <div class="my-3 py-2 border-t border-b border-orange-200 text-left text-xs space-y-1">
+              <p><strong>Alumno:</strong> <span id="ticketStudentName">Ezequiel de Luna</span></p>
+              <p><strong>Matrícula:</strong> <span id="ticketStudentMatricula">UA-2026-8941</span></p>
+              <p><strong>Recolección estimada:</strong> <span id="ticketTime" class="font-bold text-orange-700">10:30 hrs</span></p>
+            </div>
+
+            <div class="text-left text-xs mb-3">
+              <p class="font-bold text-gray-700 mb-1">Platillos solicitados:</p>
+              <ul id="ticketItemsList" class="space-y-1 text-gray-600"></ul>
+            </div>
+
+            <div class="bg-white p-3 rounded-2xl border border-gray-200 inline-block shadow-inner my-2">
+              <i class="fas fa-qrcode text-5xl text-gray-800"></i>
+              <p class="text-[10px] font-mono text-gray-500 mt-1">Muestra este QR en ventanilla</p>
+            </div>
+          </div>
+
+          <button onclick="backToMenu()" class="text-xs text-orange-600 font-bold hover:underline">
+            <i class="fas fa-arrow-left"></i> Hacer otro pedido / Volver al menú
+          </button>
+        </div>
+      </div>
+
+      <div id="cafeteriaFooter" class="p-4 bg-gray-50 border-t border-gray-200 flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-semibold text-gray-600"><i class="far fa-clock"></i> Hora de recolección:</span>
+          <input type="time" id="pickupTime" value="10:30" class="border border-gray-300 rounded-lg px-2.5 py-1 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-orange-500" />
+        </div>
+        <button onclick="confirmOrder()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl transition shadow">
+          Confirmar y Enviar a Cafetería
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CHAT EN VIVO -->
+  <div id="chatModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full h-[500px] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-purple-800 p-4 text-white flex items-center justify-between border-b-2 border-amber-400">
+        <h3 class="font-bold text-sm">Salas de Chat de Alumnos</h3>
+        <button onclick="closeChatModal()" class="text-white hover:bg-white/20 rounded-full w-7 h-7 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4 flex-1 overflow-y-auto space-y-2">
+        <div class="p-3 bg-purple-50 rounded-xl border border-purple-100 flex items-center justify-between">
+          <div>
+            <p class="font-bold text-sm text-purple-900">💻 Ing. de Software V</p>
+            <p class="text-xs text-gray-500">Último mensaje hace 5 min</p>
+          </div>
+          <span class="bg-purple-700 text-white text-[10px] px-2 py-1 rounded-full font-bold border border-amber-300">12 activos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÓGICA DE JAVASCRIPT COMPLETA -->
+  <script>
+    const usersList = [
+      {
+        id: 0,
+        name: "Ezequiel de Luna",
+        career: "Ing. en Sistemas Computacionales",
+        matricula: "UA-2026-8941",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        id: 1,
+        name: "María González",
+        career: "Ingeniería Industrial",
+        matricula: "UA-2026-3312",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"
+      },
+      {
+        id: 2,
+        name: "Carlos Ramírez",
+        career: "Lic. en Administración",
+        matricula: "UA-2026-7019",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80"
+      }
+    ];
+
+    let currentUser = usersList[0];
+    let postIdCounter = 2;
+    let selectedMediaData = null;
+    let activeOrders = [];
+
+    function switchUser(index) {
+      currentUser = usersList[index];
+      
+      document.getElementById('headerName').textContent = currentUser.name;
+      document.getElementById('headerCareer').textContent = currentUser.career;
+      document.getElementById('headerMatriculaVal').textContent = currentUser.matricula;
+      document.getElementById('headerAvatar').src = currentUser.avatar;
+      document.getElementById('feedUserAvatar').src = currentUser.avatar;
+
+      document.getElementById('modalProfileName').textContent = currentUser.name;
+      document.getElementById('modalProfileCareer').textContent = currentUser.career;
+      document.getElementById('modalProfileMatricula').textContent = "Matrícula: " + currentUser.matricula;
+      document.getElementById('modalProfileAvatar').src = currentUser.avatar;
+
+      document.getElementById('postContent').placeholder = `¿Qué estás pensando hoy, ${currentUser.name.split(' ')[0]}? Comparte texto, fotos o videos...`;
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('sideMenu');
+      const overlay = document.getElementById('sideMenuOverlay');
+      const isOpen = !menu.classList.contains('translate-x-full');
+
+      if (isOpen) {
+        menu.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+      } else {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        menu.classList.remove('translate-x-full');
+      }
+    }
+
+    function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
+    function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+    function openCafeteriaModal() { toggleMenu(); document.getElementById('cafeteriaModal').classList.remove('hidden'); }
+    function closeCafeteriaModal() { document.getElementById('cafeteriaModal').classList.add('hidden'); }
+    function openChatModal() { toggleMenu(); document.getElementById('chatModal').classList.remove('hidden'); }
+    function closeChatModal() { document.getElementById('chatModal').classList.add('hidden'); }
+
+    function requestTerminalAccess() {
+      toggleMenu();
+      document.getElementById('terminalPinInput').value = '';
+      document.getElementById('terminalPinModal').classList.remove('hidden');
+      document.getElementById('terminalPinInput').focus();
+    }
+
+    function closeTerminalPinModal() {
+      document.getElementById('terminalPinModal').classList.add('hidden');
+    }
+
+    function verifyTerminalPin() {
+      const enteredPin = document.getElementById('terminalPinInput').value;
+      if (enteredPin === "1234") {
+        closeTerminalPinModal();
+        document.getElementById('studentAppView').classList.add('hidden');
+        document.getElementById('cafeteriaTerminalView').classList.remove('hidden');
+        renderTerminalOrders();
+      } else {
+        alert('❌ PIN incorrecto. Acceso denegado.');
+        document.getElementById('terminalPinInput').value = '';
+        document.getElementById('terminalPinInput').focus();
+      }
+    }
+
+    function switchToStudentApp() {
+      document.getElementById('cafeteriaTerminalView').classList.add('hidden');
+      document.getElementById('studentAppView').classList.remove('hidden');
+    }
+
+    function changeProfilePicture(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentUser.avatar = e.target.result;
+        document.getElementById('headerAvatar').src = currentUser.avatar;
+        document.getElementById('modalProfileAvatar').src = currentUser.avatar;
+        document.getElementById('feedUserAvatar').src = currentUser.avatar;
+        alert('📸 ¡Foto de perfil actualizada correctamente!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleMediaSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileUrl = e.target.result;
+        const isVideo = file.type.startsWith('video/');
+        selectedMediaData = { url: fileUrl, type: isVideo ? 'video' : 'image' };
+        document.getElementById('mediaPreviewContent').innerHTML = isVideo ? 
+          `<video src="${fileUrl}" controls class="max-h-60 rounded-lg w-full object-contain"></video>` : 
+          `<img src="${fileUrl}" class="max-h-60 rounded-lg w-full object-contain" />`;
+        document.getElementById('mediaPreviewContainer').classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeSelectedMedia() {
+      selectedMediaData = null;
+      document.getElementById('postMediaInput').value = '';
+      document.getElementById('mediaPreviewContainer').classList.add('hidden');
+      document.getElementById('mediaPreviewContent').innerHTML = '';
+    }
+
+    function createPost() {
+      const content = document.getElementById('postContent').value.trim();
+      const audience = document.getElementById('postAudience').value;
+      if (!content && !selectedMediaData) { alert('Escribe algo o adjunta un archivo.'); return; }
+
+      const currentPostId = `post-${postIdCounter}`;
+      postIdCounter++;
+
+      let mediaHtml = selectedMediaData ? (selectedMediaData.type === 'video' ? 
+        `<div class="rounded-xl overflow-hidden mb-3 bg-black"><video src="${selectedMediaData.url}" controls class="w-full max-h-96 object-contain"></video></div>` : 
+        `<div class="rounded-xl overflow-hidden mb-3"><img src="${selectedMediaData.url}" class="w-full max-h-96 object-cover" /></div>`) : '';
+
+      const feed = document.getElementById('postsFeed');
+      feed.insertAdjacentHTML('afterbegin', `
+        <div id="${currentPostId}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 transition relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-3">
+              <img src="${currentUser.avatar}" class="w-10 h-10 rounded-full object-cover border border-purple-200" />
+              <div>
+                <p class="font-bold text-sm text-gray-900 leading-tight">${currentUser.name}</p>
+                <div class="flex items-center space-x-2 text-[11px] text-gray-500"><span>Justo ahora</span><span>•</span><span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">${audience}</span></div>
+              </div>
+            </div>
+          </div>
+          ${content ? `<p class="text-sm text-gray-800 mb-3 leading-relaxed">${content}</p>` : ''}
+          ${mediaHtml}
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <button onclick="toggleLike('${currentPostId}')" class="flex items-center space-x-1.5 hover:text-red-500 transition font-semibold">
+              <i id="likeIcon-${currentPostId}" class="far fa-heart text-base"></i>
+              <span id="likeCount-${currentPostId}">0</span> Me gusta
+            </button>
+            <button onclick="toggleCommentBox('${currentPostId}')" class="flex items-center space-x-1.5 hover:text-purple-700 transition font-semibold">
+              <i class="far fa-comment text-base"></i>
+              <span>Comentar</span>
+            </button>
+          </div>
+          <div id="commentBox-${currentPostId}" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2">
+            <div id="commentList-${currentPostId}" class="space-y-2 text-xs"></div>
+            <div class="flex space-x-2 pt-1">
+              <input type="text" id="commentInput-${currentPostId}" placeholder="Escribe un comentario..." class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500" />
+              <button onclick="addComment('${currentPostId}')" class="bg-purple-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs">Enviar</button>
+            </div>
+          </div>
+        </div>
+      `);
+      document.getElementById('postContent').value = '';
+      removeSelectedMedia();
+    }
+
+    // INTERACTIVIDAD LIKES Y COMENTARIOS
+    function toggleLike(postId) {
+      const icon = document.getElementById(`likeIcon-${postId}`);
+      const countEl = document.getElementById(`likeCount-${postId}`);
+      let count = parseInt(countEl.textContent);
+
+      if (icon.classList.contains('far')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas', 'text-red-500');
+        countEl.textContent = count + 1;
+      } else {
+        icon.classList.remove('fas', 'text-red-500');
+        icon.classList.add('far');
+        countEl.textContent = count - 1;
+      }
+    }
+
+    function toggleCommentBox(postId) {
+      const box = document.getElementById(`commentBox-${postId}`);
+      box.classList.toggle('hidden');
+    }
+
+    function addComment(postId) {
+      const input = document.getElementById(`commentInput-${postId}`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      const list = document.getElementById(`commentList-${postId}`);
+      list.insertAdjacentHTML('beforeend', `<div class="bg-gray-50 p-2 rounded-xl"><strong>${currentUser.name}:</strong> ${text}</div>`);
+      input.value = '';
+    }
+
+    // BUSCADOR Y FILTROS DEL MENÚ
+    function filterMenu() {
+      const query = document.getElementById('searchMenuInput').value.toLowerCase();
+      document.querySelectorAll('.menu-item-card').forEach(card => {
+        const name = card.getAttribute('data-name');
+        card.style.display = name.includes(query) ? 'flex' : 'none';
+      });
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.menu-item-card').forEach(card => {
+        if (cat === 'todos' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // CARRITO Y PEDIDOS
+    let cart = [];
+    let total = 0;
+
+    function addToCart(item, price) {
+      cart.push({ item, price });
+      total += price;
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartCount').textContent = `${cart.length} ítems`;
+      document.getElementById('cartTotal').textContent = `$${total.toFixed(2)} MXN`;
+      document.getElementById('cartList').innerHTML = cart.length === 0 ? 
+        `<li class="text-gray-400 italic">No has agregado nada aún.</li>` : 
+        cart.map((c, i) => `<li class="flex justify-between items-center bg-white p-2 rounded-xl border border-orange-100 shadow-sm"><span>${c.item}</span><div class="flex items-center space-x-2"><span class="font-bold text-orange-600">$${c.price}.00</span><button onclick="removeFromCart(${i})" class="text-red-400 hover:text-red-600"><i class="fas fa-times-circle"></i></button></div></li>`).join('');
+    }
+
+    function removeFromCart(i) { total -= cart[i].price; cart.splice(i, 1); updateCartUI(); }
+
+    function confirmOrder() {
+      if (cart.length === 0) { alert('Agrega platillos antes de confirmar.'); return; }
+      
+      const pickup = document.getElementById('pickupTime').value;
+      const folio = '#CH-' + Math.floor(1000 + Math.random() * 9000);
+
+      const newOrder = {
+        folio: folio,
+        studentName: currentUser.name,
+        matricula: currentUser.matricula,
+        career: currentUser.career,
+        pickupTime: pickup,
+        items: [...cart],
+        total: total,
+        status: "Pendiente"
+      };
+
+      activeOrders.unshift(newOrder);
+
+      document.getElementById('ticketFolio').textContent = folio;
+      document.getElementById('ticketStudentName').textContent = currentUser.name;
+      document.getElementById('ticketStudentMatricula').textContent = currentUser.matricula;
+      document.getElementById('ticketTime').textContent = pickup + ' hrs';
+      document.getElementById('ticketItemsList').innerHTML = cart.map(c => `<li>• ${c.item} - <span class="font-bold">$${c.price}.00</span></li>`).join('') + `<li class="pt-1 font-bold text-gray-800 border-t border-orange-200">Total: $${total.toFixed(2)} MXN</li>`;
+
+      document.getElementById('menuView').classList.add('hidden');
+      document.getElementById('activeTicketView').classList.remove('hidden');
+      document.getElementById('cafeteriaFooter').classList.add('hidden');
+    }
+
+    function backToMenu() {
+      cart = []; total = 0; updateCartUI();
+      document.getElementById('activeTicketView').classList.add('hidden');
+      document.getElementById('menuView').classList.remove('hidden');
+      document.getElementById('cafeteriaFooter').classList.remove('hidden');
+    }
+
+    function renderTerminalOrders() {
+      const grid = document.getElementById('terminalOrdersGrid');
+      const countBadge = document.getElementById('terminalOrderCount');
+      
+      countBadge.textContent = `${activeOrders.length} Órdenes activas`;
+
+      if (activeOrders.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-slate-800/50 border border-slate-700/60 rounded-3xl p-12 text-center text-slate-400">
+            <i class="fas fa-utensils text-4xl mb-3 text-slate-600"></i>
+            <p class="text-sm font-semibold">No hay pedidos pendientes en este momento.</p>
+            <p class="text-xs text-slate-500 mt-1">Simula un pedido desde la cuenta de alumno para verlo reflejado aquí instantáneamente.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = activeOrders.map((order, idx) => `
+        <div class="bg-slate-800 border ${order.status === 'Listo' ? 'border-green-500 shadow-green-900/20' : 'border-slate-700'} rounded-3xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start mb-3 border-b border-slate-700 pb-3">
+              <div>
+                <span class="text-xs font-mono text-orange-400 font-bold bg-orange-950 px-2.5 py-1 rounded-lg">${order.folio}</span>
+                <h3 class="font-bold text-base text-white mt-2">${order.studentName}</h3>
+                <p class="text-[11px] text-slate-400">${order.career} (${order.matricula})</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-amber-400 bg-amber-950/60 px-2 py-1 rounded-md block mb-1">⏰ ${order.pickupTime} hrs</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-bold ${order.status === 'Listo' ? 'bg-green-600 text-white' : 'bg-orange-600 text-white'}">${order.status}</span>
+              </div>
+            </div>
+
+            <div class="space-y-1 mb-4 text-xs text-slate-300">
+              <p class="text-slate-400 font-semibold mb-1">Detalle del consumo:</p>
+              ${order.items.map(i => `<div class="flex justify-between"><span>• ${i.item}</span><span class="font-mono text-orange-300">$${i.price}.00</span></div>`).join('')}
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-700 flex items-center justify-between gap-2">
+            <span class="font-bold text-sm text-white">Total: <span class="text-orange-400">$${order.total.toFixed(2)}</span></span>
+            <div class="flex space-x-1">
+              <button onclick="updateOrderStatus(${idx}, 'Listo')" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Listo ✓</button>
+              <button onclick="removeOrder(${idx})" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-bold px-2.5 py-1.5 rounded-xl transition" title="Archivar orden"><i class="fas fa-check-double"></i></button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateOrderStatus(index, status) {
+      activeOrders[index].status = status;
+      renderTerminalOrders();
+    }
+
+    function removeOrder(index) {
+      activeOrders.splice(index, 1);
+      renderTerminalOrders();
+    }
+  </script>
+</body>
+</html>
