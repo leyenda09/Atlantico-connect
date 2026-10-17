@@ -14,71 +14,8 @@
 </head>
 <body class="bg-gray-100 text-gray-800 antialiased min-h-screen pb-12">
 
-  <!-- ================= VISTA 0: PANTALLA DE INICIO DE SESIÓN PROFESIONAL ================= -->
-  <div id="loginView" class="min-h-screen flex items-center justify-center p-4 bg-slate-900 bg-gradient-to-br from-purple-900 via-purple-950 to-slate-900">
-    <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-md w-full p-8 shadow-2xl border border-white/20 text-center space-y-6">
-      
-      <!-- LOGO Y TÍTULO -->
-      <div class="space-y-2">
-        <div class="w-16 h-16 bg-purple-800 border-2 border-amber-400 rounded-2xl mx-auto flex items-center justify-center text-amber-300 font-black text-2xl shadow-lg">
-          U
-        </div>
-        <h1 class="text-2xl font-black text-purple-950 tracking-tight">Atlántico<span class="text-amber-500">Connect</span></h1>
-        <p class="text-xs text-gray-500">Red Social Universitaria • Inicia sesión para continuar</p>
-      </div>
-
-      <!-- FORMULARIO DE ACCESO -->
-      <form onsubmit="handleRealLogin(event)" class="space-y-4 text-left">
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Correo Institucional o Usuario</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-envelope text-xs"></i></span>
-            <input type="email" id="loginEmail" placeholder="alumno@atlantico.edu.mx" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-lock text-xs"></i></span>
-            <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Carrera / Área</label>
-          <select id="loginCareer" class="w-full bg-purple-50/50 border border-purple-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600">
-            <option value="Ing. en Sistemas Computacionales">Ing. en Sistemas Computacionales</option>
-            <option value="Ing. Industrial y de Sistemas">Ing. Industrial y de Sistemas</option>
-            <option value="Lic. en Administración de Empresas">Lic. en Administración de Empresas</option>
-            <option value="Derecho">Derecho</option>
-            <option value="Enfermería">Enfermería</option>
-          </select>
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-gray-500 pt-1">
-          <label class="flex items-center space-x-1.5 cursor-pointer">
-            <input type="checkbox" checked class="rounded text-purple-600 focus:ring-purple-500" />
-            <span>Recordar sesión</span>
-          </label>
-          <a href="#" onclick="alert('Consulta con administración para recuperar tu contraseña.')" class="text-purple-700 hover:underline font-semibold">¿Olvidaste tu clave?</a>
-        </div>
-
-        <button type="submit" class="w-full bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg border border-amber-300 flex items-center justify-center space-x-2">
-          <span>Iniciar Sesión</span>
-          <i class="fas fa-arrow-right text-xs text-amber-300"></i>
-        </button>
-      </form>
-
-      <div class="pt-2 border-t border-gray-100">
-        <p class="text-[11px] text-gray-400">Universidad del Atlántico • Sistema de Autenticación de Alumnos</p>
-      </div>
-    </div>
-  </div>
-
-
   <!-- ================= VISTA 1: APLICACIÓN DEL ALUMNO (ATLÁNTICOCONNECT) ================= -->
-  <div id="studentAppView" class="hidden">
+  <div id="studentAppView">
 
     <!-- BARRA DE NAVEGACIÓN SUPERIOR (HEADER) -->
     <header class="bg-white shadow-md sticky top-0 z-40 px-4 py-2 flex items-center justify-between border-b border-purple-100">
@@ -91,10 +28,10 @@
         </div>
         <div class="hidden sm:block text-left">
           <div class="flex items-center space-x-1">
-            <span id="headerName" class="font-bold text-sm text-gray-800 leading-tight">Ezequiel</span>
+            <span id="headerName" class="font-bold text-sm text-gray-800 leading-tight">Ezequiel de Luna</span>
             <i class="fas fa-check-circle text-amber-400 text-xs" title="Alumno Activo"></i>
           </div>
-          <p id="headerCareer" class="text-xs text-purple-700 font-semibold leading-tight">Ing. en Sistemas</p>
+          <p id="headerCareer" class="text-xs text-purple-700 font-semibold leading-tight">Ing. en Sistemas Computacionales</p>
           <p id="headerMatricula" class="text-[10px] text-gray-500 leading-tight">Matrícula: <span id="headerMatriculaVal" class="font-mono">UA-2026-8941</span></p>
         </div>
       </div>
@@ -105,12 +42,17 @@
         <span class="font-black text-xl text-purple-900 tracking-tight hidden md:inline">Atlántico<span class="text-amber-500">Connect</span></span>
       </div>
 
-      <!-- BOTÓN CERRAR SESIÓN Y MENÚ -->
+      <!-- SELECTOR DE USUARIOS & BOTÓN MENÚ 3 BARRAS -->
       <div class="flex items-center space-x-2">
-        <button onclick="logoutSession()" class="text-xs bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-xl font-bold border border-red-200 transition flex items-center space-x-1" title="Cerrar sesión">
-          <i class="fas fa-sign-out-alt"></i>
-          <span class="hidden sm:inline">Salir</span>
-        </button>
+        <div class="flex items-center space-x-1 bg-purple-50 border border-purple-200 rounded-xl px-2 py-1">
+          <i class="fas fa-user-friends text-purple-600 text-xs"></i>
+          <select id="userSelector" onchange="switchUser(this.value)" class="text-xs bg-transparent font-semibold text-purple-900 focus:outline-none cursor-pointer">
+            <option value="0">Ezequiel (Sistemas)</option>
+            <option value="1">María (Industrial)</option>
+            <option value="2">Carlos (Administración)</option>
+          </select>
+        </div>
+
         <button onclick="toggleMenu()" class="w-10 h-10 rounded-full bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-900 focus:outline-none transition shadow-sm border border-purple-200" title="Menú Principal">
           <i class="fas fa-bars text-lg"></i>
         </button>
@@ -132,6 +74,28 @@
         </div>
 
         <nav class="p-4 space-y-3">
+          <a href="https://alumnos.atlantico53.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 text-gray-700 hover:text-purple-800 transition border border-gray-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+              <i class="fas fa-university text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Portal Oficial</p>
+              <p class="text-xs text-gray-500">Acceso a alumnos.atlantico53.com</p>
+            </div>
+            <i class="fas fa-external-link-alt text-xs text-gray-400 group-hover:text-purple-600"></i>
+          </a>
+
+          <button onclick="openChatModal()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 text-gray-700 hover:text-purple-800 transition border border-gray-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+              <i class="fas fa-comments text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Grupos de Chat</p>
+              <p class="text-xs text-gray-500">Unirse a salas de compañeros</p>
+            </div>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">Nuevo</span>
+          </button>
+
           <button onclick="openCafeteriaModal()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-orange-50 text-gray-700 hover:text-orange-700 transition border border-gray-100 shadow-sm group">
             <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition">
               <i class="fas fa-hamburger text-lg"></i>
@@ -169,7 +133,7 @@
         <div class="flex space-x-3">
           <img id="feedUserAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-11 h-11 rounded-full object-cover border-2 border-purple-200 shadow-sm" alt="Foto usuario" />
           <div class="flex-1">
-            <textarea id="postContent" rows="3" placeholder="¿Qué quieres compartir con el campus hoy?" class="w-full p-3 bg-purple-50/50 rounded-xl border border-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white text-sm resize-none transition"></textarea>
+            <textarea id="postContent" rows="3" placeholder="¿Qué estás pensando hoy? Comparte texto, fotos o videos..." class="w-full p-3 bg-purple-50/50 rounded-xl border border-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white text-sm resize-none transition"></textarea>
             
             <div id="mediaPreviewContainer" class="hidden relative mt-2 rounded-xl overflow-hidden border border-gray-200 bg-black/5 max-h-64 flex items-center justify-center">
               <button onclick="removeSelectedMedia()" class="absolute top-2 right-2 bg-black/70 hover:bg-black text-white rounded-full w-7 h-7 flex items-center justify-center text-xs z-10 transition">
@@ -197,7 +161,7 @@
                 </div>
               </div>
 
-              <button onclick="createPostCloud()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm px-5 py-1.5 rounded-xl transition shadow-md flex items-center space-x-1 border border-amber-300">
+              <button onclick="createPost()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm px-5 py-1.5 rounded-xl transition shadow-md flex items-center space-x-1 border border-amber-300">
                 <i class="fas fa-paper-plane text-xs text-amber-300"></i>
                 <span>Publicar</span>
               </button>
@@ -210,17 +174,60 @@
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-purple-900 text-base flex items-center space-x-2">
           <i class="fas fa-newspaper text-purple-600"></i>
-          <span>Novedades del Campus (En Vivo)</span>
+          <span>Novedades del Campus</span>
         </h3>
         <span class="text-xs text-purple-800 bg-purple-50 px-2 py-1 rounded-md border border-purple-200 shadow-sm flex items-center space-x-1">
           <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
-          <span>Sincronizado Firestore</span>
+          <span>Actualizado en vivo</span>
         </span>
       </div>
 
-      <!-- CONTENEDOR DE POSTS EN TIEMPO REAL -->
       <div id="postsFeed" class="space-y-4">
-        <div class="text-center py-8 text-gray-400 text-sm bg-white rounded-2xl border border-gray-200">Cargando publicaciones de la nube...</div>
+        <!-- POST DE EJEMPLO BASE -->
+        <div id="post-1" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 relative">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center space-x-3">
+              <img class="userAvatarImg w-10 h-10 rounded-full object-cover border border-purple-200" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Ezequiel" />
+              <div>
+                <p class="font-bold text-sm text-gray-900 leading-tight">Ezequiel de Luna</p>
+                <div class="flex items-center space-x-2 text-[11px] text-gray-500">
+                  <span>Hace 20 min</span>
+                  <span>•</span>
+                  <span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">🌐 Todo el Campus</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-800 mb-3 leading-relaxed">
+            ¡Avanzando con el proyecto para la universidad! Presentamos la maqueta de la red social estudiantil con módulo de Cafetería Express e integración al portal. 🚀💻
+          </p>
+          <div class="rounded-xl overflow-hidden mb-3 border border-gray-100">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Imagen del proyecto" class="w-full max-h-80 object-cover" />
+          </div>
+
+          <!-- LIKES Y COMENTARIOS -->
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <button onclick="toggleLike('post-1')" class="flex items-center space-x-1.5 hover:text-red-500 transition font-semibold">
+              <i id="likeIcon-post-1" class="far fa-heart text-base"></i>
+              <span id="likeCount-post-1">12</span> Me gusta
+            </button>
+            <button onclick="toggleCommentBox('post-1')" class="flex items-center space-x-1.5 hover:text-purple-700 transition font-semibold">
+              <i class="far fa-comment text-base"></i>
+              <span>3 Comentarios</span>
+            </button>
+          </div>
+
+          <div id="commentBox-post-1" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2">
+            <div id="commentList-post-1" class="space-y-2 text-xs">
+              <div class="bg-gray-50 p-2 rounded-xl"><strong>María González:</strong> ¡Excelente avance! Felicidades 🎉</div>
+              <div class="bg-gray-50 p-2 rounded-xl"><strong>Carlos Ramírez:</strong> ¿A qué hora abren la cafetería? 🍔</div>
+            </div>
+            <div class="flex space-x-2 pt-1">
+              <input type="text" id="commentInput-post-1" placeholder="Escribe un comentario..." class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500" />
+              <button onclick="addComment('post-1')" class="bg-purple-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs">Enviar</button>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -235,19 +242,28 @@
           <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center text-2xl shadow">🐷</div>
           <div>
             <h1 class="text-xl font-black tracking-wide text-orange-400">La Chancha Urbana - Terminal KDS</h1>
-            <p class="text-xs text-slate-400">Sistema de Control de Pedidos Express</p>
+            <p class="text-xs text-slate-400">Sistema de Control y Recepción de Pedidos Express</p>
           </div>
         </div>
         <button onclick="switchToStudentApp()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center space-x-2 border border-amber-400/40">
           <i class="fas fa-mobile-alt text-amber-300"></i>
-          <span>Volver a AtlánticoConnect</span>
+          <span>Volver a AtlánticoConnect (Alumno)</span>
         </button>
       </div>
 
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-300 flex items-center space-x-2">
+          <i class="fas fa-clipboard-list text-orange-500"></i>
+          <span>Órdenes Entrantes en Tiempo Real</span>
+        </h2>
+        <span id="terminalOrderCount" class="text-xs bg-slate-800 text-orange-400 border border-slate-700 px-3 py-1 rounded-full font-mono font-bold">0 Órdenes activas</span>
+      </div>
+
       <div id="terminalOrdersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="col-span-full bg-slate-800/50 border border-slate-700/60 rounded-3xl p-12 text-center text-slate-400">
+        <div id="terminalEmptyState" class="col-span-full bg-slate-800/50 border border-slate-700/60 rounded-3xl p-12 text-center text-slate-400">
           <i class="fas fa-utensils text-4xl mb-3 text-slate-600"></i>
           <p class="text-sm font-semibold">No hay pedidos pendientes en este momento.</p>
+          <p class="text-xs text-slate-500 mt-1">Los pedidos que los alumnos confirmen aparecerán aquí automáticamente.</p>
         </div>
       </div>
     </div>
@@ -275,7 +291,7 @@
   </div>
 
 
-  <!-- MODAL PERFIL -->
+  <!-- MODAL PERFIL CON CAMBIO DE FOTO -->
   <div id="profileModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
       <div class="relative bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-900 h-28 p-4 border-b-2 border-amber-400">
@@ -283,25 +299,125 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="px-6 pb-6 relative text-center">
-        <div class="flex justify-center -mt-12 mb-3">
-          <img id="modalProfileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md" alt="Avatar" />
+      <div class="px-6 pb-6 relative">
+        <div class="flex justify-between items-end -mt-12 mb-4">
+          <div class="relative group">
+            <img id="modalProfileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md" alt="Avatar" />
+            <label class="absolute bottom-0 right-0 bg-purple-700 hover:bg-purple-800 text-white p-2 rounded-full shadow-lg cursor-pointer transition border-2 border-white" title="Cambiar foto de perfil">
+              <i class="fas fa-camera text-xs"></i>
+              <input type="file" id="profileImageInput" accept="image/*" onchange="changeProfilePicture(event)" class="hidden" />
+            </label>
+          </div>
+          <button onclick="document.getElementById('profileImageInput').click()" class="bg-purple-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-purple-800 transition flex items-center space-x-1 border border-amber-300">
+            <i class="fas fa-camera text-xs text-amber-300"></i>
+            <span>Cambiar Foto</span>
+          </button>
         </div>
-        <h3 id="modalProfileName" class="font-bold text-lg text-gray-800">Ezequiel de Luna</h3>
-        <p id="modalProfileCareer" class="text-xs text-purple-700 font-semibold">Ing. en Sistemas Computacionales</p>
-        <p id="modalProfileMat" class="text-xs text-gray-500 font-mono mt-1">UA-2026-8941</p>
-        <button onclick="closeProfileModal()" class="mt-4 bg-purple-700 hover:bg-purple-800 text-white px-5 py-2 rounded-xl text-xs font-bold transition">Cerrar</button>
+        <h3 id="modalProfileName" class="text-xl font-black text-gray-900">Ezequiel de Luna</h3>
+        <p id="modalProfileCareer" class="text-sm font-semibold text-purple-700">Ingeniería en Sistemas Computacionales</p>
+        <p id="modalProfileMatricula" class="text-xs text-gray-500 mb-3">Matrícula: <span id="modalProfileMatVal">UA-2026-8941</span></p>
+        <p class="text-xs text-gray-600 bg-purple-50/50 p-3 rounded-xl border border-purple-100 italic mb-4">
+          "Estudiante activo en Universidad del Atlántico. 💻📚"
+        </p>
       </div>
     </div>
   </div>
 
 
-  <!-- SCRIPT DE LÓGICA Y FIREBASE EN TIEMPO REAL -->
+  <!-- MODAL CAFETERÍA EXPRESS CON FILTROS Y BUSCADOR -->
+  <div id="cafeteriaModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 p-4 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-2xl">🐷</div>
+          <div>
+            <h3 class="font-bold text-lg leading-tight">La Chancha Urbana</h3>
+            <p class="text-xs text-orange-100">Cafetería Campus - Pedido Express</p>
+          </div>
+        </div>
+        <button onclick="closeCafeteriaModal()" class="text-white hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="cafeteriaBodyContainer" class="p-4 overflow-y-auto custom-scrollbar flex-1 space-y-4">
+        <div id="menuView">
+          
+          <!-- BUSCADOR Y FILTROS -->
+          <div class="mb-3 space-y-2">
+            <input type="text" id="searchMenuInput" onkeyup="filterMenu()" placeholder="🔍 Buscar platillo (ej. Chilaquiles, Torta)..." class="w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500" />
+            
+            <div class="flex space-x-1 overflow-x-auto custom-scrollbar pb-1 text-[11px] font-bold">
+              <button onclick="filterCategory('todos')" class="bg-orange-600 text-white px-2.5 py-1 rounded-lg">Todos</button>
+              <button onclick="filterCategory('antojitos')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Antojitos</button>
+              <button onclick="filterCategory('chilaquiles')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Chilaquiles</button>
+              <button onclick="filterCategory('tortas')" class="bg-gray-100 hover:bg-orange-100 text-gray-700 px-2.5 py-1 rounded-lg">Tortas/Burgers</button>
+            </div>
+          </div>
+
+          <div id="menuItemsContainer" class="space-y-2.5">
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="sandwich jamon queso"><div class="flex items-center space-x-3"><span class="text-2xl">🥪</span><div><p class="font-bold text-sm text-gray-800">Sandwich Jamón y Queso</p><span class="text-xs font-bold text-orange-600">$35.00 MXN</span></div></div><button onclick="addToCart('Sandwich Jamón y Queso', 35)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="hamburguesa clasica"><div class="flex items-center space-x-3"><span class="text-2xl">🍔</span><div><p class="font-bold text-sm text-gray-800">Hamburguesa Clásica</p><span class="text-xs font-bold text-orange-600">$105.00 MXN</span></div></div><button onclick="addToCart('Hamburguesa Clásica', 105)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="hamburguesa papas"><div class="flex items-center space-x-3"><span class="text-2xl">🍟</span><div><p class="font-bold text-sm text-gray-800">Hamburguesa c/ Papas</p><span class="text-xs font-bold text-orange-600">$115.00 MXN</span></div></div><button onclick="addToCart('Hamburguesa c/ Papas', 115)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot dog clasico"><div class="flex items-center space-x-3"><span class="text-2xl">🌭</span><div><p class="font-bold text-sm text-gray-800">Hot Dog Clásico</p><span class="text-xs font-bold text-orange-600">$35.00 MXN</span></div></div><button onclick="addToCart('Hot Dog Clásico', 35)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot dog tocino"><div class="flex items-center space-x-3"><span class="text-2xl">🥓</span><div><p class="font-bold text-sm text-gray-800">Hot Dog c/ Tocino</p><span class="text-xs font-bold text-orange-600">$50.00 MXN</span></div></div><button onclick="addToCart('Hot Dog c/ Tocino', 50)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="torta deshebrada"><div class="flex items-center space-x-3"><span class="text-2xl">🥖</span><div><p class="font-bold text-sm text-gray-800">Torta Deshebrada</p><span class="text-xs font-bold text-orange-600">$70.00 MXN</span></div></div><button onclick="addToCart('Torta Deshebrada', 70)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="tortas" data-name="torta carne asada"><div class="flex items-center space-x-3"><span class="text-2xl">🥩</span><div><p class="font-bold text-sm text-gray-800">Torta de Carne Asada</p><span class="text-xs font-bold text-orange-600">$80.00 MXN</span></div></div><button onclick="addToCart('Torta de Carne Asada', 80)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="sincronizada"><div class="flex items-center space-x-3"><span class="text-2xl">🌮</span><div><p class="font-bold text-sm text-gray-800">Sincronizada</p><span class="text-xs font-bold text-orange-600">$100.00 MXN</span></div></div><button onclick="addToCart('Sincronizada', 100)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles nat"><div class="flex items-center space-x-3"><span class="text-2xl">🍽️</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles Nat</p><span class="text-xs font-bold text-orange-600">$80.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles Nat', 80)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles carne"><div class="flex items-center space-x-3"><span class="text-2xl">🥩</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles c/ Carne</p><span class="text-xs font-bold text-orange-600">$110.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles c/ Carne', 110)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="chilaquiles" data-name="chilaquiles pollo"><div class="flex items-center space-x-3"><span class="text-2xl">🍗</span><div><p class="font-bold text-sm text-gray-800">Chilaquiles c/ Pollo</p><span class="text-xs font-bold text-orange-600">$85.00 MXN</span></div></div><button onclick="addToCart('Chilaquiles c/ Pollo', 85)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+            <div class="menu-item-card flex items-center justify-between p-3 border border-gray-200 rounded-2xl bg-white" data-category="antojitos" data-name="hot cakes"><div class="flex items-center space-x-3"><span class="text-2xl">🥞</span><div><p class="font-bold text-sm text-gray-800">Hot Cakes</p><span class="text-xs font-bold text-orange-600">$15.00 MXN</span></div></div><button onclick="addToCart('Hot Cakes', 15)" class="bg-orange-100 hover:bg-orange-500 hover:text-white text-orange-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">+ Agregar</button></div>
+          </div>
+
+          <!-- CARRITO Y CONFIRMACIÓN DE PEDIDO -->
+          <div class="mt-6 bg-orange-50 p-4 rounded-2xl border border-orange-200">
+            <h5 class="font-bold text-sm text-orange-900 mb-2 flex items-center justify-between">
+              <span class="flex items-center space-x-1.5"><i class="fas fa-shopping-cart"></i><span>Tu Pedido</span></span>
+              <span id="cartCount" class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full font-bold">0 ítems</span>
+            </h5>
+            <ul id="cartList" class="text-xs text-gray-700 space-y-1.5 mb-3">
+              <li class="text-gray-400 italic">No has agregado nada aún.</li>
+            </ul>
+            <div class="flex justify-between items-center font-bold text-sm text-gray-900 pt-2 border-t border-orange-200 mb-3">
+              <span>Total:</span>
+              <span id="cartTotal" class="text-orange-600 text-base">$0.00 MXN</span>
+            </div>
+            <button onclick="confirmCafeteriaOrderCloud()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1">
+              <i class="fas fa-paper-plane"></i>
+              <span>Confirmar y Enviar a Cocina</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TICKET DE ORDEN GENERADO -->
+        <div id="activeTicketView" class="hidden text-center space-y-4 py-2">
+          <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-3xl p-5 text-gray-800 shadow-sm relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              ¡Pedido en Preparación! 🐷
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-2">Folio de Orden:</p>
+            <h3 id="ticketFolio" class="text-2xl font-black text-orange-600 font-mono tracking-widest my-1">#ORD-0000</h3>
+            <p id="ticketDetails" class="text-xs font-medium text-gray-600 border-t border-b border-orange-200 py-2 my-2"></p>
+            <p class="text-[11px] text-gray-500 italic">Presenta este folio en caja para pagar y recoger tus alimentos.</p>
+          </div>
+          <button onclick="resetCafeteriaModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded-xl text-xs transition">
+            Hacer otro pedido
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SCRIPT CON LOGICA COMPLETA Y FIREBASE EN TIEMPO REAL -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuración de tu proyecto en Firebase
+    // Configuración de tu proyecto Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyApOEnwOwygIL2U1x_cSQFTm0_FOC7gZT4",
       authDomain: "atlantico-connect.firebaseapp.com",
@@ -315,65 +431,49 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let currentUser = null;
+    // Usuarios del Selector
+    const profiles = [
+      { name: "Ezequiel de Luna", career: "Ing. en Sistemas Computacionales", mat: "UA-2026-8941", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" },
+      { name: "María González", career: "Ing. Industrial y de Sistemas", mat: "UA-2026-9022", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" },
+      { name: "Carlos Ramírez", career: "Lic. en Administración de Empresas", mat: "UA-2026-8815", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" }
+    ];
+    let currentProfileIdx = 0;
     let selectedMediaData = null;
+    let cart = [];
 
-    // Verificar si ya hay una sesión guardada en la computadora/celular
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedUser = localStorage.getItem('atlantico_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        applyUserSession();
-      }
-    });
+    // Cambiar Usuario desde el Selector
+    window.switchUser = function(val) {
+      currentProfileIdx = parseInt(val);
+      const p = profiles[currentProfileIdx];
+      document.getElementById('headerName').innerText = p.name;
+      document.getElementById('headerCareer').innerText = p.career;
+      document.getElementById('headerMatriculaVal').innerText = p.mat;
+      document.getElementById('headerAvatar').src = p.avatar;
+      document.getElementById('feedUserAvatar').src = p.avatar;
+      document.getElementById('modalProfileName').innerText = p.name;
+      document.getElementById('modalProfileCareer').innerText = p.career;
+      document.getElementById('modalProfileMatVal').innerText = p.mat;
+      document.getElementById('modalProfileAvatar').src = p.avatar;
+    }
 
-    // Procesar Inicio de Sesión
-    window.handleRealLogin = function(e) {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const career = document.getElementById('loginCareer').value;
+    // Cambiar Foto de Perfil
+    window.changeProfilePicture = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-      // Extraer nombre legible a partir del correo (ej. ezequiel@atlantico.edu.mx -> Ezequiel)
-      let namePart = email.split('@')[0].replace('.', ' ');
-      let formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-
-      // Crear objeto de usuario
-      currentUser = {
-        name: formattedName,
-        email: email,
-        career: career,
-        mat: "UA-2026-" + Math.floor(1000 + Math.random() * 9000),
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName)}&background=6b21a8&color=fff&size=150`
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const newAvatarUrl = e.target.result;
+        profiles[currentProfileIdx].avatar = newAvatarUrl;
+        
+        document.getElementById('headerAvatar').src = newAvatarUrl;
+        document.getElementById('feedUserAvatar').src = newAvatarUrl;
+        document.getElementById('modalProfileAvatar').src = newAvatarUrl;
       };
-
-      // Guardar sesión persistente
-      localStorage.setItem('atlantico_user', JSON.stringify(currentUser));
-      applyUserSession();
+      reader.readAsDataURL(file);
     }
 
-    function applyUserSession() {
-      document.getElementById('headerName').innerText = currentUser.name;
-      document.getElementById('headerCareer').innerText = currentUser.career;
-      document.getElementById('headerMatriculaVal').innerText = currentUser.mat;
-      document.getElementById('headerAvatar').src = currentUser.avatar;
-      document.getElementById('feedUserAvatar').src = currentUser.avatar;
-      document.getElementById('modalProfileName').innerText = currentUser.name;
-      document.getElementById('modalProfileCareer').innerText = currentUser.career;
-      document.getElementById('modalProfileMat').innerText = currentUser.mat;
-      document.getElementById('modalProfileAvatar').src = currentUser.avatar;
-
-      document.getElementById('loginView').classList.add('hidden');
-      document.getElementById('studentAppView').classList.remove('hidden');
-    }
-
-    window.logoutSession = function() {
-      localStorage.removeItem('atlantico_user');
-      currentUser = null;
-      document.getElementById('studentAppView').classList.add('hidden');
-      document.getElementById('loginView').classList.remove('hidden');
-    }
-
-    // Archivos Multimedia
+    // Previsualizar Medios al Publicar
     window.handleMediaSelect = function(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -399,18 +499,19 @@
       document.getElementById('postMediaInput').value = '';
     }
 
-    // Publicar en Firestore
-    window.createPostCloud = async function() {
+    // Publicar Post en Firebase
+    window.createPost = async function() {
       const content = document.getElementById('postContent').value.trim();
       if (!content && !selectedMediaData) return;
 
+      const p = profiles[currentProfileIdx];
       const audience = document.getElementById('postAudience').value;
 
       try {
         await addDoc(collection(db, "posts"), {
-          author: currentUser.name,
-          career: currentUser.career,
-          avatar: currentUser.avatar,
+          author: p.name,
+          career: p.career,
+          avatar: p.avatar,
           content: content,
           media: selectedMediaData || null,
           audience: audience,
@@ -421,20 +522,19 @@
         removeSelectedMedia();
       } catch (e) {
         console.error("Error al publicar:", e);
-        alert("No se pudo conectar a la base de datos.");
+        alert("No se pudo publicar. Revisa la conexión.");
       }
     }
 
-    // Sincronización en Tiempo Real
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
+    // Escuchar Posts en Tiempo Real
+    const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(qPosts, (snapshot) => {
       const feed = document.getElementById('postsFeed');
       feed.innerHTML = '';
 
-      let count = 0;
       snapshot.forEach((docSnap) => {
         const post = docSnap.data();
-        count++;
+        const postId = docSnap.id;
 
         const mediaHTML = post.media ? `<div class="rounded-xl overflow-hidden mb-3 border border-gray-100 bg-black/5"><img src="${post.media}" class="w-full max-h-80 object-cover" /></div>` : '';
 
@@ -443,7 +543,7 @@
         div.innerHTML = `
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center space-x-3">
-              <img class="w-10 h-10 rounded-full object-cover border border-purple-200" src="${post.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}" alt="Avatar" />
+              <img class="w-10 h-10 rounded-full object-cover border border-purple-200" src="${post.avatar || profiles[0].avatar}" alt="Avatar" />
               <div>
                 <p class="font-bold text-sm text-gray-900 leading-tight">${post.author}</p>
                 <div class="flex items-center space-x-2 text-[11px] text-gray-500">
@@ -456,16 +556,178 @@
           </div>
           <p class="text-sm text-gray-800 mb-3 leading-relaxed whitespace-pre-line">${post.content}</p>
           ${mediaHTML}
+          
           <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-            <span class="font-semibold text-purple-700"><i class="fas fa-heart text-red-500 mr-1"></i> ${post.likes || 0} Me gusta</span>
-            <span class="font-semibold text-gray-400">AtlánticoConnect Cloud</span>
+            <button onclick="toggleLike('${postId}')" class="flex items-center space-x-1.5 hover:text-red-500 transition font-semibold">
+              <i id="likeIcon-${postId}" class="far fa-heart text-base"></i>
+              <span id="likeCount-${postId}">${post.likes || 0}</span> Me gusta
+            </button>
+            <button onclick="toggleCommentBox('${postId}')" class="flex items-center space-x-1.5 hover:text-purple-700 transition font-semibold">
+              <i class="far fa-comment text-base"></i>
+              <span>Comentarios</span>
+            </button>
+          </div>
+
+          <div id="commentBox-${postId}" class="hidden mt-3 pt-3 border-t border-gray-100 space-y-2">
+            <div id="commentList-${postId}" class="space-y-2 text-xs"></div>
+            <div class="flex space-x-2 pt-1">
+              <input type="text" id="commentInput-${postId}" placeholder="Escribe un comentario..." class="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500" />
+              <button onclick="addComment('${postId}')" class="bg-purple-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs">Enviar</button>
+            </div>
           </div>
         `;
         feed.appendChild(div);
       });
+    });
+
+    // Lógica de Cafetería y Carrito
+    window.addToCart = function(item, price) {
+      cart.push({ item, price });
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cartList');
+      const count = document.getElementById('cartCount');
+      const total = document.getElementById('cartTotal');
+
+      count.innerText = `${cart.length} ítems`;
+
+      if (cart.length === 0) {
+        list.innerHTML = `<li class="text-gray-400 italic">No has agregado nada aún.</li>`;
+        total.innerText = "$0.00 MXN";
+        return;
+      }
+
+      let sum = 0;
+      list.innerHTML = '';
+      cart.forEach((c, idx) => {
+        sum += c.price;
+        list.innerHTML += `
+          <li class="flex justify-between items-center bg-white p-2 rounded-lg border border-orange-100">
+            <span>${c.item}</span>
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-orange-600">$${c.price}.00</span>
+              <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 p-0.5"><i class="fas fa-trash text-xs"></i></button>
+            </div>
+          </li>
+        `;
+      });
+
+      total.innerText = `$${sum}.00 MXN`;
+    }
+
+    window.removeFromCart = function(idx) {
+      cart.splice(idx, 1);
+      updateCartUI();
+    }
+
+    // Confirmar Pedido en Firestore
+    window.confirmCafeteriaOrderCloud = async function() {
+      if (cart.length === 0) {
+        alert("Agrega platillos a tu pedido antes de enviar.");
+        return;
+      }
+
+      const p = profiles[currentProfileIdx];
+      const folio = "#ORD-" + Math.floor(1000 + Math.random() * 9000);
+      const summary = cart.map(c => c.item).join(', ');
+      const totalSum = cart.reduce((acc, curr) => acc + curr.price, 0);
+
+      try {
+        await addDoc(collection(db, "cafeteria_orders"), {
+          folio: folio,
+          studentName: p.name,
+          mat: p.mat,
+          items: cart,
+          total: totalSum,
+          status: "Pendiente",
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById('ticketFolio').innerText = folio;
+        document.getElementById('ticketDetails').innerText = `${summary} (Total: $${totalSum}.00 MXN)`;
+        document.getElementById('menuView').classList.add('hidden');
+        document.getElementById('activeTicketView').classList.remove('hidden');
+        
+        cart = [];
+        updateCartUI();
+      } catch (e) {
+        console.error("Error al enviar pedido:", e);
+        alert("Error al enviar el pedido.");
+      }
+    }
+
+    window.resetCafeteriaModal = function() {
+      document.getElementById('activeTicketView').classList.add('hidden');
+      document.getElementById('menuView').classList.remove('hidden');
+    }
+
+    // Buscador y Filtros de Cafetería
+    window.filterMenu = function() {
+      const q = document.getElementById('searchMenuInput').value.toLowerCase();
+      document.querySelectorAll('.menu-item-card').forEach(card => {
+        const name = card.getAttribute('data-name');
+        card.style.display = name.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    window.filterCategory = function(cat) {
+      document.querySelectorAll('.menu-item-card').forEach(card => {
+        if (cat === 'todos' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Escuchar Pedidos en Tiempo Real en la Terminal KDS
+    const qOrders = query(collection(db, "cafeteria_orders"), orderBy("createdAt", "desc"));
+    onSnapshot(qOrders, (snapshot) => {
+      const grid = document.getElementById('terminalOrdersGrid');
+      const countLabel = document.getElementById('terminalOrderCount');
+      
+      grid.innerHTML = '';
+      let count = 0;
+
+      snapshot.forEach((docSnap) => {
+        const ord = docSnap.data();
+        count++;
+
+        const itemsList = ord.items ? ord.items.map(i => `<li>• ${i.item} - $${i.price}.00</li>`).join('') : '';
+
+        const card = document.createElement('div');
+        card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-4 text-slate-200 shadow-lg space-y-3";
+        card.innerHTML = `
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <span class="font-mono font-black text-orange-400 text-lg">${ord.folio}</span>
+            <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">${ord.status || 'Pendiente'}</span>
+          </div>
+          <div>
+            <p class="font-bold text-sm text-white">${ord.studentName}</p>
+            <p class="text-[11px] text-slate-400 font-mono">Matrícula: ${ord.mat}</p>
+          </div>
+          <ul class="text-xs space-y-1 text-slate-300 border-t border-b border-slate-700/60 py-2 font-medium">
+            ${itemsList}
+          </ul>
+          <div class="flex justify-between items-center pt-1">
+            <span class="text-xs text-slate-400">Total a Cobrar:</span>
+            <span class="text-base font-bold text-orange-400">$${ord.total}.00 MXN</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      countLabel.innerText = `${count} Órdenes activas`;
 
       if (count === 0) {
-        feed.innerHTML = '<div class="text-center py-8 text-gray-400 text-sm bg-white rounded-2xl border border-gray-200">Aún no hay publicaciones. ¡Sé el primero en compartir algo!</div>';
+        grid.innerHTML = `
+          <div id="terminalEmptyState" class="col-span-full bg-slate-800/50 border border-slate-700/60 rounded-3xl p-12 text-center text-slate-400">
+            <i class="fas fa-utensils text-4xl mb-3 text-slate-600"></i>
+            <p class="text-sm font-semibold">No hay pedidos pendientes en este momento.</p>
+          </div>
+        `;
       }
     });
 
@@ -479,7 +741,9 @@
     }
     window.openProfileModal = function() { document.getElementById('profileModal').classList.remove('hidden'); }
     window.closeProfileModal = function() { document.getElementById('profileModal').classList.add('hidden'); }
-    window.openCafeteriaModal = function() { alert("Módulo de Cafetería Express abierto."); }
+    window.openCafeteriaModal = function() { document.getElementById('cafeteriaModal').classList.remove('hidden'); }
+    window.closeCafeteriaModal = function() { document.getElementById('cafeteriaModal').classList.add('hidden'); }
+    window.openChatModal = function() { alert("Salas de chat en vivo disponibles próximamente."); }
     window.requestTerminalAccess = function() { document.getElementById('terminalPinModal').classList.remove('hidden'); }
     window.closeTerminalPinModal = function() { document.getElementById('terminalPinModal').classList.add('hidden'); document.getElementById('terminalPinInput').value = ''; }
     window.verifyTerminalPin = function() {
@@ -494,6 +758,42 @@
     window.switchToStudentApp = function() {
       document.getElementById('cafeteriaTerminalView').classList.add('hidden');
       document.getElementById('studentAppView').classList.remove('hidden');
+    }
+
+    // Likes y Comentarios
+    window.toggleLike = function(id) {
+      const icon = document.getElementById(`likeIcon-${id}`);
+      const count = document.getElementById(`likeCount-${id}`);
+      if (!icon || !count) return;
+
+      let current = parseInt(count.innerText) || 0;
+      if (icon.classList.contains('far')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas', 'text-red-500');
+        count.innerText = current + 1;
+      } else {
+        icon.classList.remove('fas', 'text-red-500');
+        icon.classList.add('far');
+        count.innerText = Math.max(0, current - 1);
+      }
+    }
+
+    window.toggleCommentBox = function(id) {
+      const box = document.getElementById(`commentBox-${id}`);
+      if (box) box.classList.toggle('hidden');
+    }
+
+    window.addComment = function(id) {
+      const input = document.getElementById(`commentInput-${id}`);
+      const list = document.getElementById(`commentList-${id}`);
+      if (!input || !list || !input.value.trim()) return;
+
+      const p = profiles[currentProfileIdx];
+      const div = document.createElement('div');
+      div.className = "bg-gray-50 p-2 rounded-xl";
+      div.innerHTML = `<strong>${p.name}:</strong> ${input.value.trim()}`;
+      list.appendChild(div);
+      input.value = '';
     }
   </script>
 </body>
