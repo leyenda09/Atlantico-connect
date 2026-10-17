@@ -14,8 +14,87 @@
 </head>
 <body class="bg-gray-100 text-gray-800 antialiased min-h-screen pb-12">
 
+  <!-- ================= VISTA 0: PANTALLA DE INICIO DE SESIÓN MULTIUSUARIO ================= -->
+  <div id="loginView" class="min-h-screen flex items-center justify-center p-4 bg-slate-900 bg-gradient-to-br from-purple-900 via-purple-950 to-slate-900">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-md w-full p-8 shadow-2xl border border-white/20 text-center space-y-6">
+      
+      <!-- LOGO Y ENCABEZADO -->
+      <div class="space-y-2">
+        <div class="w-16 h-16 bg-purple-800 border-2 border-amber-400 rounded-2xl mx-auto flex items-center justify-center text-amber-300 font-black text-2xl shadow-lg">
+          U
+        </div>
+        <h1 class="text-2xl font-black text-purple-950 tracking-tight">Atlántico<span class="text-amber-500">Connect</span></h1>
+        <p class="text-xs text-gray-500">Red Social Universitaria • Selecciona tu cuenta o ingresa</p>
+      </div>
+
+      <!-- SECCIÓN: USUARIOS GUARDADOS EN EL DISPOSITIVO -->
+      <div id="savedAccountsSection" class="hidden text-left space-y-3">
+        <label class="block text-xs font-bold text-gray-700">Cuentas en este dispositivo:</label>
+        <div id="savedAccountsContainer" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+          <!-- Se llena dinámicamente -->
+        </div>
+        <button onclick="showNewUserForm()" class="w-full text-xs text-purple-700 font-bold hover:underline text-center pt-2">
+          <i class="fas fa-plus-circle mr-1"></i> Usar otra cuenta
+        </button>
+      </div>
+
+      <!-- FORMULARIO DE ACCESO (NUEVO O EXISTENTE) -->
+      <form id="loginForm" onsubmit="handleRealLogin(event)" class="space-y-4 text-left">
+        <div id="selectedUserHeader" class="hidden bg-purple-50 p-3 rounded-2xl border border-purple-200 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <img id="selectedUserAvatar" src="" class="w-10 h-10 rounded-full object-cover border border-purple-400" />
+            <div>
+              <p id="selectedUserName" class="font-bold text-xs text-gray-900 leading-tight"></p>
+              <p id="selectedUserEmail" class="text-[11px] text-purple-700 font-medium"></p>
+            </div>
+          </div>
+          <button type="button" onclick="resetLoginSelection()" class="text-xs text-gray-400 hover:text-red-500 p-1" title="Cambiar usuario">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div id="emailFieldContainer">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Correo Institucional o Usuario</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-envelope text-xs"></i></span>
+            <input type="email" id="loginEmail" placeholder="alumno@atlantico.edu.mx" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-lock text-xs"></i></span>
+            <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
+          </div>
+        </div>
+
+        <div id="careerFieldContainer">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Carrera / Área</label>
+          <select id="loginCareer" class="w-full bg-purple-50/50 border border-purple-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600">
+            <option value="Ing. en Sistemas Computacionales">Ing. en Sistemas Computacionales</option>
+            <option value="Ing. Industrial y de Sistemas">Ing. Industrial y de Sistemas</option>
+            <option value="Lic. en Administración de Empresas">Lic. en Administración de Empresas</option>
+            <option value="Derecho">Derecho</option>
+            <option value="Enfermería">Enfermería</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg border border-amber-300 flex items-center justify-center space-x-2">
+          <span>Iniciar Sesión</span>
+          <i class="fas fa-arrow-right text-xs text-amber-300"></i>
+        </button>
+      </form>
+
+      <div class="pt-2 border-t border-gray-100">
+        <p class="text-[11px] text-gray-400">Universidad del Atlántico • Sistema de Alumnos</p>
+      </div>
+    </div>
+  </div>
+
+
   <!-- ================= VISTA 1: APLICACIÓN DEL ALUMNO (ATLÁNTICOCONNECT) ================= -->
-  <div id="studentAppView">
+  <div id="studentAppView" class="hidden">
 
     <!-- BARRA DE NAVEGACIÓN SUPERIOR (HEADER) -->
     <header class="bg-white shadow-md sticky top-0 z-40 px-4 py-2 flex items-center justify-between border-b border-purple-100">
@@ -42,7 +121,7 @@
         <span class="font-black text-xl text-purple-900 tracking-tight hidden md:inline">Atlántico<span class="text-amber-500">Connect</span></span>
       </div>
 
-      <!-- SELECTOR DE USUARIOS & BOTÓN MENÚ 3 BARRAS -->
+      <!-- SELECTOR DE USUARIOS, BOTÓN SALIR & BOTÓN MENÚ 3 BARRAS -->
       <div class="flex items-center space-x-2">
         <div class="flex items-center space-x-1 bg-purple-50 border border-purple-200 rounded-xl px-2 py-1">
           <i class="fas fa-user-friends text-purple-600 text-xs"></i>
@@ -52,6 +131,11 @@
             <option value="2">Carlos (Administración)</option>
           </select>
         </div>
+
+        <button onclick="logoutSession()" class="text-xs bg-red-50 text-red-700 hover:bg-red-100 px-3 py-2 rounded-xl font-bold border border-red-200 transition flex items-center space-x-1" title="Cerrar sesión">
+          <i class="fas fa-sign-out-alt text-xs"></i>
+          <span class="hidden md:inline">Salir</span>
+        </button>
 
         <button onclick="toggleMenu()" class="w-10 h-10 rounded-full bg-purple-50 hover:bg-purple-100 flex items-center justify-center text-purple-900 focus:outline-none transition shadow-sm border border-purple-200" title="Menú Principal">
           <i class="fas fa-bars text-lg"></i>
@@ -116,6 +200,17 @@
               <p class="text-xs text-red-500">Acceso exclusivo personal (PIN)</p>
             </div>
             <i class="fas fa-lock text-xs text-red-400"></i>
+          </button>
+
+          <button onclick="logoutSession()" class="w-full text-left flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 text-red-700 transition border border-red-100 shadow-sm group">
+            <div class="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition">
+              <i class="fas fa-sign-out-alt text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-bold text-sm">Cerrar Sesión</p>
+              <p class="text-xs text-red-500">Salir de AtlánticoConnect</p>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-red-400"></i>
           </button>
         </nav>
       </div>
@@ -183,7 +278,6 @@
       </div>
 
       <div id="postsFeed" class="space-y-4">
-        <!-- POST DE EJEMPLO BASE -->
         <div id="post-1" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 relative">
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center space-x-3">
@@ -412,12 +506,12 @@
   </div>
 
 
-  <!-- SCRIPT CON LOGICA COMPLETA Y FIREBASE EN TIEMPO REAL -->
+  <!-- SCRIPT CON LÓGICA DE USUARIOS GUARDADOS Y PERSISTENCIA -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Configuración de tu proyecto Firebase
+    // Configuración Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyApOEnwOwygIL2U1x_cSQFTm0_FOC7gZT4",
       authDomain: "atlantico-connect.firebaseapp.com",
@@ -431,17 +525,160 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Usuarios del Selector
     const profiles = [
       { name: "Ezequiel de Luna", career: "Ing. en Sistemas Computacionales", mat: "UA-2026-8941", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" },
       { name: "María González", career: "Ing. Industrial y de Sistemas", mat: "UA-2026-9022", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" },
       { name: "Carlos Ramírez", career: "Lic. en Administración de Empresas", mat: "UA-2026-8815", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" }
     ];
+
     let currentProfileIdx = 0;
     let selectedMediaData = null;
     let cart = [];
+    let selectedSavedUser = null;
 
-    // Cambiar Usuario desde el Selector
+    window.addEventListener('DOMContentLoaded', () => {
+      checkSavedTicket();
+      checkSessionState();
+    });
+
+    function getSavedAccounts() {
+      const accs = localStorage.getItem('atlantico_saved_accounts');
+      return accs ? JSON.parse(accs) : [];
+    }
+
+    function renderSavedAccounts() {
+      const accounts = getSavedAccounts();
+      const container = document.getElementById('savedAccountsContainer');
+      const section = document.getElementById('savedAccountsSection');
+
+      if (accounts.length === 0) {
+        section.classList.add('hidden');
+        showNewUserForm();
+        return;
+      }
+
+      section.classList.remove('hidden');
+      container.innerHTML = '';
+
+      accounts.forEach((u, idx) => {
+        container.innerHTML += `
+          <div onclick="selectAccountToLogin(${idx})" class="p-2.5 rounded-2xl border border-gray-200 hover:border-purple-400 bg-gray-50/80 hover:bg-purple-50/50 cursor-pointer transition flex items-center justify-between group">
+            <div class="flex items-center space-x-3">
+              <img src="${u.avatar}" class="w-9 h-9 rounded-full object-cover border border-purple-200" />
+              <div>
+                <p class="font-bold text-xs text-gray-800 leading-tight group-hover:text-purple-900">${u.name}</p>
+                <p class="text-[10px] text-gray-500 font-mono">${u.email}</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-purple-600"></i>
+          </div>
+        `;
+      });
+    }
+
+    window.selectAccountToLogin = function(idx) {
+      const accounts = getSavedAccounts();
+      selectedSavedUser = accounts[idx];
+
+      document.getElementById('selectedUserName').innerText = selectedSavedUser.name;
+      document.getElementById('selectedUserEmail').innerText = selectedSavedUser.email;
+      document.getElementById('selectedUserAvatar').src = selectedSavedUser.avatar;
+
+      document.getElementById('selectedUserHeader').classList.remove('hidden');
+      document.getElementById('emailFieldContainer').classList.add('hidden');
+      document.getElementById('careerFieldContainer').classList.add('hidden');
+      document.getElementById('loginEmail').removeAttribute('required');
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginPassword').focus();
+    }
+
+    window.resetLoginSelection = function() {
+      selectedSavedUser = null;
+      document.getElementById('selectedUserHeader').classList.add('hidden');
+      document.getElementById('emailFieldContainer').classList.remove('hidden');
+      document.getElementById('careerFieldContainer').classList.remove('hidden');
+      document.getElementById('loginEmail').setAttribute('required', 'true');
+    }
+
+    window.showNewUserForm = function() {
+      resetLoginSelection();
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+    }
+
+    function checkSessionState() {
+      const activeUser = localStorage.getItem('atlantico_active_user');
+      if (activeUser) {
+        const u = JSON.parse(activeUser);
+        profiles[0] = u;
+        switchUser(0);
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('studentAppView').classList.remove('hidden');
+      } else {
+        renderSavedAccounts();
+        document.getElementById('loginView').classList.remove('hidden');
+        document.getElementById('studentAppView').classList.add('hidden');
+      }
+    }
+
+    window.handleRealLogin = function(e) {
+      e.preventDefault();
+      
+      let userObj = null;
+
+      if (selectedSavedUser) {
+        userObj = selectedSavedUser;
+      } else {
+        const email = document.getElementById('loginEmail').value.trim();
+        const career = document.getElementById('loginCareer').value;
+        let namePart = email.split('@')[0].replace('.', ' ');
+        let formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+
+        userObj = {
+          name: formattedName,
+          email: email,
+          career: career,
+          mat: "UA-2026-" + Math.floor(1000 + Math.random() * 9000),
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formattedName)}&background=6b21a8&color=fff&size=150`
+        };
+
+        // Guardar en la lista de cuentas conocidas del dispositivo
+        let savedAccounts = getSavedAccounts();
+        if (!savedAccounts.some(a => a.email === userObj.email)) {
+          savedAccounts.push(userObj);
+          localStorage.setItem('atlantico_saved_accounts', JSON.stringify(savedAccounts));
+        }
+      }
+
+      // Guardar usuario en sesión activa
+      localStorage.setItem('atlantico_active_user', JSON.stringify(userObj));
+      profiles[0] = userObj;
+      switchUser(0);
+
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('studentAppView').classList.remove('hidden');
+    }
+
+    window.logoutSession = function() {
+      localStorage.removeItem('atlantico_active_user');
+      selectedSavedUser = null;
+      checkSessionState();
+      if (document.getElementById('sideMenu').classList.contains('translate-x-0')) {
+        toggleMenu();
+      }
+    }
+
+    function checkSavedTicket() {
+      const savedTicket = localStorage.getItem('activeCafeteriaTicket');
+      if (savedTicket) {
+        const ticket = JSON.parse(savedTicket);
+        document.getElementById('ticketFolio').innerText = ticket.folio;
+        document.getElementById('ticketDetails').innerText = ticket.details;
+        document.getElementById('menuView').classList.add('hidden');
+        document.getElementById('activeTicketView').classList.remove('hidden');
+      }
+    }
+
     window.switchUser = function(val) {
       currentProfileIdx = parseInt(val);
       const p = profiles[currentProfileIdx];
@@ -456,7 +693,6 @@
       document.getElementById('modalProfileAvatar').src = p.avatar;
     }
 
-    // Cambiar Foto de Perfil
     window.changeProfilePicture = function(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -469,11 +705,25 @@
         document.getElementById('headerAvatar').src = newAvatarUrl;
         document.getElementById('feedUserAvatar').src = newAvatarUrl;
         document.getElementById('modalProfileAvatar').src = newAvatarUrl;
+
+        // Actualizar avatar en localStorage
+        const activeUser = localStorage.getItem('atlantico_active_user');
+        if (activeUser && currentProfileIdx === 0) {
+          const u = JSON.parse(activeUser);
+          u.avatar = newAvatarUrl;
+          localStorage.setItem('atlantico_active_user', JSON.stringify(u));
+
+          let savedAccounts = getSavedAccounts();
+          const matchIdx = savedAccounts.findIndex(a => a.email === u.email);
+          if (matchIdx !== -1) {
+            savedAccounts[matchIdx].avatar = newAvatarUrl;
+            localStorage.setItem('atlantico_saved_accounts', JSON.stringify(savedAccounts));
+          }
+        }
       };
       reader.readAsDataURL(file);
     }
 
-    // Previsualizar Medios al Publicar
     window.handleMediaSelect = function(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -499,7 +749,6 @@
       document.getElementById('postMediaInput').value = '';
     }
 
-    // Publicar Post en Firebase
     window.createPost = async function() {
       const content = document.getElementById('postContent').value.trim();
       if (!content && !selectedMediaData) return;
@@ -526,7 +775,6 @@
       }
     }
 
-    // Escuchar Posts en Tiempo Real
     const qPosts = query(collection(db, "posts"), orderBy("createdAt", "desc"));
     onSnapshot(qPosts, (snapshot) => {
       const feed = document.getElementById('postsFeed');
@@ -580,7 +828,6 @@
       });
     });
 
-    // Lógica de Cafetería y Carrito
     window.addToCart = function(item, price) {
       cart.push({ item, price });
       updateCartUI();
@@ -622,7 +869,6 @@
       updateCartUI();
     }
 
-    // Confirmar Pedido en Firestore
     window.confirmCafeteriaOrderCloud = async function() {
       if (cart.length === 0) {
         alert("Agrega platillos a tu pedido antes de enviar.");
@@ -633,6 +879,7 @@
       const folio = "#ORD-" + Math.floor(1000 + Math.random() * 9000);
       const summary = cart.map(c => c.item).join(', ');
       const totalSum = cart.reduce((acc, curr) => acc + curr.price, 0);
+      const detailsText = `${summary} (Total: $${totalSum}.00 MXN)`;
 
       try {
         await addDoc(collection(db, "cafeteria_orders"), {
@@ -645,8 +892,13 @@
           createdAt: serverTimestamp()
         });
 
+        localStorage.setItem('activeCafeteriaTicket', JSON.stringify({
+          folio: folio,
+          details: detailsText
+        }));
+
         document.getElementById('ticketFolio').innerText = folio;
-        document.getElementById('ticketDetails').innerText = `${summary} (Total: $${totalSum}.00 MXN)`;
+        document.getElementById('ticketDetails').innerText = detailsText;
         document.getElementById('menuView').classList.add('hidden');
         document.getElementById('activeTicketView').classList.remove('hidden');
         
@@ -659,11 +911,11 @@
     }
 
     window.resetCafeteriaModal = function() {
+      localStorage.removeItem('activeCafeteriaTicket');
       document.getElementById('activeTicketView').classList.add('hidden');
       document.getElementById('menuView').classList.remove('hidden');
     }
 
-    // Buscador y Filtros de Cafetería
     window.filterMenu = function() {
       const q = document.getElementById('searchMenuInput').value.toLowerCase();
       document.querySelectorAll('.menu-item-card').forEach(card => {
@@ -682,7 +934,6 @@
       });
     }
 
-    // Escuchar Pedidos en Tiempo Real en la Terminal KDS
     const qOrders = query(collection(db, "cafeteria_orders"), orderBy("createdAt", "desc"));
     onSnapshot(qOrders, (snapshot) => {
       const grid = document.getElementById('terminalOrdersGrid');
@@ -731,7 +982,6 @@
       }
     });
 
-    // Menús y Modales
     window.toggleMenu = function() {
       const menu = document.getElementById('sideMenu');
       const overlay = document.getElementById('sideMenuOverlay');
@@ -760,7 +1010,6 @@
       document.getElementById('studentAppView').classList.remove('hidden');
     }
 
-    // Likes y Comentarios
     window.toggleLike = function(id) {
       const icon = document.getElementById(`likeIcon-${id}`);
       const count = document.getElementById(`likeCount-${id}`);
