@@ -1101,10 +1101,9 @@
       </form>
     </div>
   </div>
-
-  <!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
+<!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
   <script type="module">
-    // Documentación: Importación de funciones necesarias de Firebase SDK
+    // Importación de funciones necesarias de Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
     import { 
       getFirestore, 
@@ -1129,15 +1128,18 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Función para calcular el tiempo relativo de forma dinámica
+    // Función para calcular el tiempo relativo con soporte robusto de milisegundos
     window.obtenerTiempoRelativo = function(timestamp) {
       if (!timestamp) return "hace un momento";
 
-      const fechaPost = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      const millis = timestamp.toMillis ? timestamp.toMillis() : (timestamp.toDate ? timestamp.toDate().getTime() : new Date(timestamp).getTime());
+      
+      const fechaPost = new Date(millis);
       const ahora = new Date();
       const segundos = Math.floor((ahora - fechaPost) / 1000);
 
-      if (segundos < 60) return "hace un momento";
+      if (segundos < 10) return "hace un momento";
+      if (segundos < 60) return `hace ${segundos} segs`;
 
       const minutos = Math.floor(segundos / 60);
       if (minutos < 60) return `hace ${minutos} min${minutos > 1 ? 's' : ''}`;
@@ -1173,9 +1175,7 @@
       }
     };
 
-    // =========================================================================
-    // NUEVO: Escuchar en tiempo real la colección para pintar los posts y el tiempo
-    // =========================================================================
+    // Escuchar en tiempo real la colección para pintar los posts y el tiempo
     document.addEventListener("DOMContentLoaded", () => {
       const postsFeed = document.getElementById("postsFeed");
       if (!postsFeed) return;
@@ -1189,7 +1189,6 @@
           const post = docSnap.data();
           const tiempoFormateado = window.obtenerTiempoRelativo(post.createdAt);
 
-          // Construimos la estructura de la tarjeta usando los datos reales de Firebase
           htmlAcumulado += `
             <div class="bg-white rounded-2xl shadow-sm p-4 mb-4">
               <div class="flex items-center justify-between mb-3">
@@ -1216,5 +1215,4 @@
       });
     });
   </script>
-</body>
-</html>
+  
