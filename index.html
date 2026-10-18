@@ -285,7 +285,7 @@
               <div>
                 <p class="font-bold text-sm text-gray-900 leading-tight">Ezequiel de Luna</p>
                 <div class="flex items-center space-x-2 text-[11px] text-gray-500">
-                  <span id="postTime-post-1">Hace un momento</span>
+                  <span id="postTime-${doc.id}">${tiempoCalculado}</span>
                   <span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">🌐 Todo el Campus</span>
                 </div>
               </div>
@@ -1102,7 +1102,7 @@
     </div>
   </div>
 
-  <!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
+<!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
   <script type="module">
     // Documentación: Importación de funciones necesarias de Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
@@ -1110,13 +1110,13 @@
       getFirestore, 
       collection, 
       addDoc, 
-      serverTimestamp, // 1. CRUCIAL: Utilizado para guardar la fecha exacta del servidor y evitar errores en iOS
+      serverTimestamp, 
       onSnapshot, 
       query, 
       orderBy 
     } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
 
-    // Configuración de tu proyecto Firebase (asegúrate de mantener tus credenciales)
+    // Configuración de tu proyecto Firebase
     const firebaseConfig = {
       apiKey: "TU_API_KEY",
       authDomain: "atlantico-connect.firebaseapp.com",
@@ -1129,14 +1129,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /**
-     * Documentación: Función para calcular el tiempo relativo de forma dinámica.
-     * Compatible con dispositivos iOS (Safari) al evitar parseos directos de cadenas con guiones.
-     */
+    // Función para calcular el tiempo relativo de forma dinámica
     window.obtenerTiempoRelativo = function(timestamp) {
       if (!timestamp) return "hace un momento";
 
-      // Convierte el Timestamp de Firebase a objeto Date de JavaScript de manera segura
       const fechaPost = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
       const ahora = new Date();
       const segundos = Math.floor((ahora - fechaPost) / 1000);
@@ -1153,11 +1149,7 @@
       return `hace ${dias} día${dias > 1 ? 's' : ''}`;
     };
 
-    /**
-     * Documentación: Función para crear una publicación en Firestore.
-     * Utiliza `serverTimestamp()` para garantizar que el tiempo sea consistente 
-     * en cualquier zona horaria y dispositivo (incluyendo iOS).
-     */
+    // Función para crear una publicación en Firestore
     window.createPost = async function() {
       const contenidoInput = document.getElementById("postContent");
       const texto = contenidoInput.value.trim();
@@ -1171,7 +1163,7 @@
         await addDoc(collection(db, "publicaciones"), {
           texto: texto,
           usuario: "Ezequiel de Luna",
-          createdAt: serverTimestamp() // Soluciona el problema de estancamiento en "hace un momento"
+          createdAt: serverTimestamp()
         });
 
         contenidoInput.value = "";
@@ -1180,8 +1172,49 @@
         console.error("Error al crear la publicación:", error);
       }
     };
+
+    // =========================================================================
+    // NUEVO: Escuchar en tiempo real la colección para pintar los posts y el tiempo
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      const postsFeed = document.getElementById("postsFeed");
+      if (!postsFeed) return;
+
+      const q = query(collection(db, "publicaciones"), orderBy("createdAt", "desc"));
+
+      onSnapshot(q, (snapshot) => {
+        let htmlAcumulado = "";
+
+        snapshot.forEach((docSnap) => {
+          const post = docSnap.data();
+          const tiempoFormateado = window.obtenerTiempoRelativo(post.createdAt);
+
+          // Construimos la estructura de la tarjeta usando los datos reales de Firebase
+          htmlAcumulado += `
+            <div class="bg-white rounded-2xl shadow-sm p-4 mb-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center font-bold text-purple-700">
+                    ${post.usuario ? post.usuario.charAt(0) : 'E'}
+                  </div>
+                  <div>
+                    <p class="font-bold text-sm text-gray-900">${post.usuario || 'Usuario'}</p>
+                    <div class="flex items-center space-x-2 text-[11px] text-gray-500">
+                      <span>${tiempoFormateado}</span>
+                      <span>•</span>
+                      <span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">🌐 Todo el Campus</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-sm text-gray-800 mb-3 leading-relaxed">${post.texto}</p>
+            </div>
+          `;
+        });
+
+        postsFeed.innerHTML = htmlAcumulado;
+      });
+    });
   </script>
-</body>
-</html>
 </body>
 </html>
