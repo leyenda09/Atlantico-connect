@@ -1045,5 +1045,144 @@
       input.value = '';
     }
   </script>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Meta etiquetas optimizadas para iOS (Safari) y visualización responsiva -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Universidad del Atlántico - AtlánticoConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased min-h-screen pb-12">
+
+  <!-- ================= VISTA 0: PANTALLA DE INICIO DE SESIÓN MULTIUSUARIO ================= -->
+  <div id="loginView" class="min-h-screen flex items-center justify-center p-4 bg-slate-900 bg-gradient-to-br from-purple-900 via-purple-950 to-slate-900">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl max-w-md w-full p-8 shadow-2xl border border-white/20 text-center space-y-6">
+      
+      <!-- LOGO Y ENCABEZADO -->
+      <div class="space-y-2">
+        <div class="w-16 h-16 bg-purple-800 border-2 border-amber-400 rounded-2xl mx-auto flex items-center justify-center text-amber-300 font-black text-2xl shadow-lg">
+          U
+        </div>
+        <h1 class="text-2xl font-black text-purple-950 tracking-tight">Atlántico<span class="text-amber-500">Connect</span></h1>
+        <p class="text-xs text-gray-500">Red Social Universitaria • Inicia sesión con tus credenciales</p>
+      </div>
+
+      <!-- FORMULARIO DE ACCESO -->
+      <form id="loginForm" onsubmit="handleRealLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Correo Institucional o Usuario</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-envelope text-xs"></i></span>
+            <input type="email" id="loginEmail" placeholder="alumno@atlantico.edu.mx" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-lock text-xs"></i></span>
+            <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-purple-50/50 border border-purple-200 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 transition" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg border border-amber-300 flex items-center justify-center space-x-2">
+          <span>Iniciar Sesión</span>
+          <i class="fas fa-arrow-right text-xs text-amber-300"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
+  <script type="module">
+    // Documentación: Importación de funciones necesarias de Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      serverTimestamp, // 1. CRUCIAL: Utilizado para guardar la fecha exacta del servidor y evitar errores en iOS
+      onSnapshot, 
+      query, 
+      orderBy 
+    } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
+
+    // Configuración de tu proyecto Firebase (asegúrate de mantener tus credenciales)
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "atlantico-connect.firebaseapp.com",
+      projectId: "atlantico-connect",
+      storageBucket: "atlantico-connect.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    /**
+     * Documentación: Función para calcular el tiempo relativo de forma dinámica.
+     * Compatible con dispositivos iOS (Safari) al evitar parseos directos de cadenas con guiones.
+     */
+    window.obtenerTiempoRelativo = function(timestamp) {
+      if (!timestamp) return "hace un momento";
+
+      // Convierte el Timestamp de Firebase a objeto Date de JavaScript de manera segura
+      const fechaPost = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      const ahora = new Date();
+      const segundos = Math.floor((ahora - fechaPost) / 1000);
+
+      if (segundos < 60) return "hace un momento";
+
+      const minutos = Math.floor(segundos / 60);
+      if (minutos < 60) return `hace ${minutos} min${minutos > 1 ? 's' : ''}`;
+
+      const horas = Math.floor(minutos / 60);
+      if (horas < 24) return `hace ${horas} hora${horas > 1 ? 's' : ''}`;
+
+      const dias = Math.floor(horas / 24);
+      return `hace ${dias} día${dias > 1 ? 's' : ''}`;
+    };
+
+    /**
+     * Documentación: Función para crear una publicación en Firestore.
+     * Utiliza `serverTimestamp()` para garantizar que el tiempo sea consistente 
+     * en cualquier zona horaria y dispositivo (incluyendo iOS).
+     */
+    window.createPost = async function() {
+      const contenidoInput = document.getElementById("postContent");
+      const texto = contenidoInput.value.trim();
+
+      if (texto === "") {
+        alert("Escribe algo para publicar.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "publicaciones"), {
+          texto: texto,
+          usuario: "Ezequiel de Luna",
+          createdAt: serverTimestamp() // Soluciona el problema de estancamiento en "hace un momento"
+        });
+
+        contenidoInput.value = "";
+        console.log("Publicación creada exitosamente.");
+      } catch (error) {
+        console.error("Error al crear la publicación:", error);
+      }
+    };
+  </script>
+</body>
+</html>
 </body>
 </html>
