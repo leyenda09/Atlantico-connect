@@ -1103,12 +1103,14 @@
   </div>
 <!-- ================= SCRIPT DE LÓGICA GENERAL Y FIRESTORE ================= -->
   <script type="module">
-    // Importación de funciones necesarias de Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
     import { 
       getFirestore, 
       collection, 
       addDoc, 
+      doc,
+      updateDoc,
+      deleteDoc,
       serverTimestamp, 
       onSnapshot, 
       query, 
@@ -1128,30 +1130,19 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Función para calcular el tiempo relativo con soporte robusto de milisegundos
-    window.obtenerTiempoRelativo = function(timestamp) {
-      if (!timestamp) return "hace un momento";
-
+    // Formato de hora fija compatible con iOS
+    window.obtenerHoraPublicacion = function(timestamp) {
+      if (!timestamp) return "Reciente";
       const millis = timestamp.toMillis ? timestamp.toMillis() : (timestamp.toDate ? timestamp.toDate().getTime() : new Date(timestamp).getTime());
-      
       const fechaPost = new Date(millis);
-      const ahora = new Date();
-      const segundos = Math.floor((ahora - fechaPost) / 1000);
-
-      if (segundos < 10) return "hace un momento";
-      if (segundos < 60) return `hace ${segundos} segs`;
-
-      const minutos = Math.floor(segundos / 60);
-      if (minutos < 60) return `hace ${minutos} min${minutos > 1 ? 's' : ''}`;
-
-      const horas = Math.floor(minutos / 60);
-      if (horas < 24) return `hace ${horas} hora${horas > 1 ? 's' : ''}`;
-
-      const dias = Math.floor(horas / 24);
-      return `hace ${dias} día${dias > 1 ? 's' : ''}`;
+      return fechaPost.toLocaleTimeString('es-MX', { 
+        hour: 'numeric', 
+        minute: '2-digit', 
+        hour12: true 
+      });
     };
 
-    // Función para crear una publicación en Firestore
+    // Crear publicación
     window.createPost = async function() {
       const contenidoInput = document.getElementById("postContent");
       const texto = contenidoInput.value.trim();
@@ -1167,15 +1158,70 @@
           usuario: "Ezequiel de Luna",
           createdAt: serverTimestamp()
         });
-
         contenidoInput.value = "";
-        console.log("Publicación creada exitosamente.");
       } catch (error) {
         console.error("Error al crear la publicación:", error);
       }
     };
 
-    // Escuchar en tiempo real la colección para pintar los posts y el tiempo
+    // Toggle para mostrar/ocultar el menú de tres puntos
+    window.toggleMenu = function(id) {
+      const menu = document.getElementById(`menu-${id}`);
+      if (menu) {
+        menu.classList.toggle("hidden");
+      }
+    };
+
+    // Función para Borrar Publicación
+    window.borrarPost = async function(id) {
+      if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
+        try {
+          await deleteDoc(doc(db, "publicaciones", id));
+          console.log("Publicación eliminada correctamente.");
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          alert("No se pudo eliminar la publicación.");
+        }
+      }
+    };
+
+    // Función para Editar Publicación
+    window.editarPost = async function(id, textoActual) {
+      const nuevoTexto = prompt("Edita tu publicación:", textoActual);
+      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+        try {
+          const postRef = doc(db, "publicaciones", id);
+          await updateDoc(postRef, {
+            texto: nuevoTexto.trim()
+          });
+          console.log("Publicación actualizada correctamente.");
+        } catch (error) {
+          console.error("Error al editar:", error);
+          alert("No se pudo actualizar la publicación.");
+        }
+      }
+    };
+
+    // Función para Compartir Publicación (Soporta API Nativa de iOS/Android)
+    window.compartirPost = async function(texto) {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'AtlánticoConnect',
+            text: texto,
+            url: window.location.href,
+          });
+        } catch (error) {
+          console.log('Error o cancelación al compartir:', error);
+        }
+      } else {
+        // Alternativa si el navegador no soporta Web Share API
+        navigator.clipboard.writeText(texto);
+        alert("Texto copiado al portapapeles.");
+      }
+    };
+
+    // Escuchar cambios e inyectar el HTML con el menú
     document.addEventListener("DOMContentLoaded", () => {
       const postsFeed = document.getElementById("postsFeed");
       if (!postsFeed) return;
@@ -1186,11 +1232,13 @@
         let htmlAcumulado = "";
 
         snapshot.forEach((docSnap) => {
+          const id = docSnap.id;
           const post = docSnap.data();
-          const tiempoFormateado = window.obtenerTiempoRelativo(post.createdAt);
+          const horaFormateada = window.obtenerHoraPublicacion(post.createdAt);
+          const textoEscapado = (post.texto || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
           htmlAcumulado += `
-            <div class="bg-white rounded-2xl shadow-sm p-4 mb-4">
+            <div class="bg-white rounded-2xl shadow-sm p-4 mb-4 relative">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center space-x-3">
                   <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center font-bold text-purple-700">
@@ -1199,14 +1247,38 @@
                   <div>
                     <p class="font-bold text-sm text-gray-900">${post.usuario || 'Usuario'}</p>
                     <div class="flex items-center space-x-2 text-[11px] text-gray-500">
-                      <span>${tiempoFormateado}</span>
+                      <span>${horaFormateada}</span>
                       <span>•</span>
                       <span class="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-semibold border border-purple-100">🌐 Todo el Campus</span>
                     </div>
                   </div>
                 </div>
+
+                <!-- Botón de tres puntos -->
+                <div class="relative">
+                  <button onclick="window.toggleMenu('${id}')" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-full hover:bg-gray-100 focus:outline-none">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                  </button>
+
+                  <!-- Menú Desplegable -->
+                  <div id="menu-${id}" class="hidden absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 z-10 py-1">
+                    <button onclick="window.editarPost('${id}', '${textoEscapado}'); window.toggleMenu('${id}');" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                      ✏️ <span>Editar</span>
+                    </button>
+                    <button onclick="window.compartirPost('${textoEscapado}'); window.toggleMenu('${id}');" class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+                      🔗 <span>Compartir</span>
+                    </button>
+                    <button onclick="window.borrarPost('${id}'); window.toggleMenu('${id}');" class="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center space-x-2">
+                      🗑️ <span>Eliminar</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <p class="text-sm text-gray-800 mb-3 leading-relaxed">${post.texto}</p>
+
+              <!-- Contenido del Post -->
+              <p class="text-sm text-gray-800 mb-1 leading-relaxed">${post.texto}</p>
             </div>
           `;
         });
@@ -1215,4 +1287,3 @@
       });
     });
   </script>
-  
